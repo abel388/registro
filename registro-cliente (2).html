@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Cliente / Client Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0d0f; --surface: #141417; --border: #2a2a30;
+      --accent: #c9a84c; --accent-dim: rgba(201,168,76,0.12);
+      --text: #f0ede6; --muted: #7a7880; --error: #e05f5f; --success: #5fc97a;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 2rem; position: relative; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(120,80,200,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Language bar */
+    .lang-bar {
+      position: fixed; top: 1.2rem; right: 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem; z-index: 100;
+    }
+    .lang-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.3rem 0.75rem; border-radius: 2px; cursor: pointer; transition: all 0.2s;
+    }
+    .lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .lang-btn:hover:not(.active) { border-color: #444; color: var(--text); }
+    .lang-sep { color: var(--border); font-size: 0.8rem; }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 2px; width: 100%; max-width: 520px;
+      padding: 3rem 2.5rem; position: relative;
+      animation: fadeUp 0.6s ease both;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 2rem; right: 2rem; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+
+    .sphere {
+      flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(201,168,76,0.65) 0%, rgba(201,168,76,0.18) 40%,
+        rgba(201,168,76,0.05) 70%, transparent 100%);
+      border: 1px solid rgba(201,168,76,0.35);
+      box-shadow: inset -5px -5px 14px rgba(0,0,0,0.45), 0 0 22px rgba(201,168,76,0.1);
+      position: relative; overflow: hidden;
+    }
+    .sphere-lh { position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(201,168,76,0.25); transform:translateY(-50%); }
+    .sphere-lv { position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(201,168,76,0.25); transform:translateX(-50%); }
+    .sphere-ring { position:absolute; inset:9px; border-radius:50%; border:1px solid rgba(201,168,76,0.18); }
+
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--accent); letter-spacing: 0.02em; }
+    .subtitle { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.2rem; }
+
+    .field { margin-bottom: 1.2rem; }
+    label { display:block; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
+
+    input, select {
+      width: 100%; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 2px;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; padding: 0.7rem 1rem;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      outline: none; appearance: none;
+    }
+    input::placeholder { color: var(--muted); }
+    input:focus, select:focus {
+      border-color: var(--accent); background: var(--accent-dim);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+    select option { background: #1a1a20; color: var(--text); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    button[type="submit"] {
+      width: 100%; padding: 0.85rem; margin-top: 1.5rem;
+      background: var(--accent); color: #0d0d0f;
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+      border: none; border-radius: 2px; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    button[type="submit"]:hover { opacity: 0.88; }
+    button[type="submit"]:active { transform: scale(0.99); }
+    button[type="submit"]:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .alert { padding: 0.8rem 1rem; border-radius: 2px; font-size: 0.82rem; margin-top: 1.2rem; display: none; }
+    .alert.error   { background:rgba(224,95,95,0.1); border:1px solid rgba(224,95,95,0.3); color:var(--error); }
+    .alert.success { background:rgba(95,201,122,0.1); border:1px solid rgba(95,201,122,0.3); color:var(--success); }
+    .alert.show    { display:block; animation:fadeUp 0.3s ease; }
+
+    @media(max-width:480px){
+      .card { padding: 2rem 1.5rem; }
+      .row  { grid-template-columns: 1fr; }
+      .lang-bar { top: 0.8rem; right: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <span style="font-size:1rem">🌐</span>
+  <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+  <span class="lang-sep">|</span>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<div class="card">
+  <div class="header">
+    <div class="sphere">
+      <div class="sphere-lh"></div>
+      <div class="sphere-lv"></div>
+      <div class="sphere-ring"></div>
+    </div>
+    <div>
+      <div class="logo">San Valentín</div>
+      <div class="subtitle" id="txt-subtitle">Registro Internacional de Clientes</div>
+    </div>
+  </div>
+
+  <form id="registroForm" novalidate>
+
+    <div class="field">
+      <label id="lbl-name">Nombre Completo</label>
+      <input type="text" id="name" placeholder="Juan Pérez" required />
+    </div>
+
+    <div class="field">
+      <label id="lbl-email">Correo Electrónico</label>
+      <input type="email" id="email" placeholder="juan@ejemplo.com" required />
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label id="lbl-phone">Teléfono</label>
+        <input type="tel" id="phone" placeholder="+57 300 000 0000" required />
+      </div>
+      <div class="field">
+        <label id="lbl-birth">Fecha de Nacimiento</label>
+        <input type="date" id="birthDate" required />
+      </div>
+    </div>
+
+    <div class="field">
+      <label id="lbl-country">País de Origen</label>
+      <select id="country" required>
+        <option value="" id="opt-country-def">Selecciona un país</option>
+        <option value="Colombia">Colombia</option>
+        <option value="México">México</option>
+        <option value="España">España</option>
+        <option value="Argentina">Argentina</option>
+        <option value="Perú">Perú</option>
+        <option value="Venezuela">Venezuela</option>
+        <option value="Chile">Chile</option>
+        <option value="Ecuador">Ecuador</option>
+        <option value="Bolivia">Bolivia</option>
+        <option value="Estados Unidos">United States</option>
+        <option value="Otro">Other / Otro</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label id="lbl-doctype">Tipo de Documento</label>
+        <select id="documentType" required>
+          <option value="" id="opt-doc-def">Selecciona</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="lbl-docnum">Número de Documento</label>
+        <input type="text" id="documentNumber" placeholder="1234567890" required />
+      </div>
+    </div>
+
+    <div id="errorMsg" class="alert error"></div>
+    <div id="successMsg" class="alert success"></div>
+
+    <button type="submit" id="submitBtn">Registrarse</button>
+  </form>
+</div>
+
+<script>
+  const BACKEND = 'https://apically-nonpunctuating-rylan.ngrok-free.dev';
+
+  const i18n = {
+    es: {
+      subtitle:'Registro Internacional de Clientes',
+      name:'Nombre Completo', email:'Correo Electrónico', phone:'Teléfono',
+      birth:'Fecha de Nacimiento', country:'País de Origen', countryDef:'Selecciona un país',
+      doctype:'Tipo de Documento', doctypeDef:'Selecciona', docnum:'Número de Documento',
+      submit:'Registrarse', loading:'Registrando...',
+      errFill:'Por favor, completa todos los campos.',
+      errServer:'No se pudo conectar con el servidor.',
+      success:'¡Registro exitoso!',
+      namePh:'Juan Pérez', emailPh:'juan@ejemplo.com', phonePh:'+57 300 000 0000',
+    },
+    en: {
+      subtitle:'International Client Registration',
+      name:'Full Name', email:'Email Address', phone:'Phone Number',
+      birth:'Date of Birth', country:'Country of Origin', countryDef:'Select a country',
+      doctype:'Document Type', doctypeDef:'Select', docnum:'Document Number',
+      submit:'Register', loading:'Registering...',
+      errFill:'Please fill in all fields.',
+      errServer:'Could not connect to the server.',
+      success:'Registration successful!',
+      namePh:'John Doe', emailPh:'john@example.com', phonePh:'+1 555 000 0000',
+    }
+  };
+
+  const docTypes = {
+    'Colombia':       ['Cédula de Ciudadanía','Pasaporte'],
+    'México':         ['RFC','INE','Pasaporte'],
+    'España':         ['DNI','Pasaporte'],
+    'Argentina':      ['DNI','Pasaporte'],
+    'Estados Unidos': ['Social Security Number',"Driver's License",'Passport'],
+    'default':        ['Passport / Pasaporte','ID / Cédula','DNI','Other / Otro'],
+  };
+
+  let lang = 'es';
+
+  function setLang(l) {
+    lang = l;
+    const t = i18n[l];
+    document.getElementById('txt-subtitle').textContent    = t.subtitle;
+    document.getElementById('lbl-name').textContent        = t.name;
+    document.getElementById('lbl-email').textContent       = t.email;
+    document.getElementById('lbl-phone').textContent       = t.phone;
+    document.getElementById('lbl-birth').textContent       = t.birth;
+    document.getElementById('lbl-country').textContent     = t.country;
+    document.getElementById('lbl-doctype').textContent     = t.doctype;
+    document.getElementById('lbl-docnum').textContent      = t.docnum;
+    document.getElementById('opt-country-def').textContent = t.countryDef;
+    document.getElementById('submitBtn').textContent       = t.submit;
+    document.getElementById('name').placeholder            = t.namePh;
+    document.getElementById('email').placeholder           = t.emailPh;
+    document.getElementById('phone').placeholder           = t.phonePh;
+    document.getElementById('btn-es').classList.toggle('active', l==='es');
+    document.getElementById('btn-en').classList.toggle('active', l==='en');
+    updateDocTypes();
+  }
+
+  function updateDocTypes() {
+    const country = document.getElementById('country').value;
+    const types = docTypes[country] || docTypes['default'];
+    const sel = document.getElementById('documentType');
+    sel.innerHTML = `<option value="">${i18n[lang].doctypeDef}</option>`;
+    types.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t; o.textContent = t; sel.appendChild(o);
+    });
+  }
+
+  document.getElementById('country').addEventListener('change', updateDocTypes);
+
+  document.getElementById('registroForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const t = i18n[lang];
+    document.getElementById('errorMsg').classList.remove('show');
+    document.getElementById('successMsg').classList.remove('show');
+
+    const data = {
+      name:           document.getElementById('name').value.trim(),
+      email:          document.getElementById('email').value.trim(),
+      phone:          document.getElementById('phone').value.trim(),
+      birthDate:      document.getElementById('birthDate').value,
+      country:        document.getElementById('country').value,
+      documentType:   document.getElementById('documentType').value,
+      documentNumber: document.getElementById('documentNumber').value.trim(),
+    };
+
+    if (Object.values(data).some(v => !v)) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = '✗ ' + t.errFill;
+      el.classList.add('show'); return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> ${t.loading}`;
+
+    try {
+      const res = await fetch(`${BACKEND}/api/clientes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        const el = document.getElementById('errorMsg');
+        el.textContent = '✗ ' + (result.message || t.errFill);
+        el.classList.add('show');
+      } else {
+        const el = document.getElementById('successMsg');
+        el.textContent = '✓ ' + t.success;
+        el.classList.add('show');
+        document.getElementById('registroForm').reset();
+        updateDocTypes();
+      }
+    } catch {
+      const el = document.getElementById('errorMsg');
+      el.textContent = '✗ ' + t.errServer;
+      el.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t.submit;
+    }
+  });
+</script>
+</body>
+</html>
