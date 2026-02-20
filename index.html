@@ -25,19 +25,50 @@
         radial-gradient(ellipse 60% 50% at 90% 80%, rgba(120,80,200,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
-    .lang-bar {
-      position: fixed; top: 1.2rem; right: 1.5rem;
-      display: flex; align-items: center; gap: 0.5rem; z-index: 100;
+
+    /* ── LANGUAGE GLOBE ── */
+    .lang-bar { position: fixed; top: 1.2rem; right: 1.5rem; z-index: 200; }
+    .lang-globe-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--accent); font-size: 1.3rem;
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 0 0 0 rgba(201,168,76,0);
     }
-    .lang-btn {
-      background: none; border: 1px solid var(--border); color: var(--muted);
-      font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.3rem 0.75rem; border-radius: 2px; cursor: pointer; transition: all 0.2s;
+    .lang-globe-btn:hover, .lang-globe-btn.open {
+      border-color: var(--accent);
+      box-shadow: 0 0 16px rgba(201,168,76,0.25);
     }
-    .lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .lang-btn:hover:not(.active) { border-color: #444; color: var(--text); }
-    .lang-sep { color: var(--border); font-size: 0.8rem; }
+    .lang-dropdown {
+      position: absolute; top: calc(100% + 0.6rem); right: 0;
+      background: #18181e; border: 1px solid var(--border);
+      border-radius: 6px; min-width: 210px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      overflow: hidden;
+      opacity: 0; transform: translateY(-8px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .lang-dropdown.open {
+      opacity: 1; transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+    .lang-option {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 1rem; cursor: pointer;
+      font-size: 0.85rem; color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .lang-option:hover { background: var(--accent-dim); color: var(--text); }
+    .lang-option.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+    .lang-option .flag { font-size: 1.1rem; }
+    .lang-option .lang-label { display: flex; flex-direction: column; }
+    .lang-option .lang-main { font-size: 0.85rem; }
+    .lang-option .lang-sub { font-size: 0.68rem; color: var(--muted); opacity: 0.65; }
+
+    /* ── CARD ── */
     .card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 2px; width: 100%; max-width: 520px;
@@ -67,6 +98,8 @@
     .sphere-ring { position:absolute; inset:9px; border-radius:50%; border:1px solid rgba(201,168,76,0.18); }
     .logo { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--accent); letter-spacing: 0.02em; }
     .subtitle { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.2rem; }
+
+    /* ── FORM ── */
     .field { margin-bottom: 1.2rem; }
     label { display:block; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
     input, select {
@@ -84,6 +117,8 @@
     }
     select option { background: #1a1a20; color: var(--text); }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .date-row { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 0.4rem; }
+
     button[type="submit"] {
       width: 100%; padding: 0.85rem; margin-top: 1.5rem;
       background: var(--accent); color: #0d0d0f;
@@ -106,9 +141,16 @@
     .alert.error   { background:rgba(224,95,95,0.1); border:1px solid rgba(224,95,95,0.3); color:var(--error); }
     .alert.success { background:rgba(95,201,122,0.1); border:1px solid rgba(95,201,122,0.3); color:var(--success); }
     .alert.show    { display:block; animation:fadeUp 0.3s ease; }
+
+    [dir="rtl"] .lang-dropdown { right: auto; left: 0; }
+    [dir="rtl"] .lang-option { border-left: none; border-right: 2px solid transparent; }
+    [dir="rtl"] .lang-option.active { border-right-color: var(--accent); }
+
     @media(max-width:480px){
       .card { padding: 2rem 1.5rem; }
       .row  { grid-template-columns: 1fr; }
+      .date-row { grid-template-columns: 1fr 1fr; }
+      .date-row select:nth-child(2) { grid-column: 1 / -1; order: -1; }
       .lang-bar { top: 0.8rem; right: 0.8rem; }
     }
   </style>
@@ -116,10 +158,10 @@
 <body>
 
 <div class="lang-bar">
-  <span style="font-size:1rem">🌐</span>
-  <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-  <span class="lang-sep">|</span>
-  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  <div style="position:relative">
+    <button class="lang-globe-btn" id="globeBtn" aria-label="Select language">🌐</button>
+    <div class="lang-dropdown" id="langDropdown"></div>
+  </div>
 </div>
 
 <div class="card">
@@ -131,191 +173,408 @@
     </div>
     <div>
       <div class="logo">San Valentín</div>
-      <div class="subtitle" id="txt-subtitle">Registro Internacional de Clientes</div>
+      <div class="subtitle" id="txt-subtitle"></div>
     </div>
   </div>
 
   <form id="registroForm" novalidate>
     <div class="field">
-      <label id="lbl-name">Nombre Completo</label>
-      <input type="text" id="name" placeholder="Juan Pérez" required />
+      <label id="lbl-name"></label>
+      <input type="text" id="name" required />
     </div>
     <div class="field">
-      <label id="lbl-email">Correo Electrónico</label>
-      <input type="email" id="email" placeholder="juan@ejemplo.com" required />
+      <label id="lbl-email"></label>
+      <input type="email" id="email" required />
     </div>
     <div class="row">
       <div class="field">
-        <label id="lbl-phone">Teléfono</label>
-        <input type="tel" id="phone" placeholder="+57 300 000 0000" required />
+        <label id="lbl-phone"></label>
+        <input type="tel" id="phone" required />
       </div>
       <div class="field">
-        <label id="lbl-birth">Fecha de Nacimiento</label>
-        <input type="date" id="birthDate" required />
+        <label id="lbl-birth"></label>
+        <div class="date-row">
+          <select id="birthDay" required></select>
+          <select id="birthMonth" required></select>
+          <select id="birthYear" required></select>
+        </div>
       </div>
     </div>
     <div class="field">
-      <label id="lbl-country">País de Origen</label>
-      <select id="country" required>
-        <option value="" id="opt-country-def">Selecciona un país</option>
-        <option value="Colombia">Colombia</option>
-        <option value="México">México</option>
-        <option value="España">España</option>
-        <option value="Argentina">Argentina</option>
-        <option value="Perú">Perú</option>
-        <option value="Venezuela">Venezuela</option>
-        <option value="Chile">Chile</option>
-        <option value="Ecuador">Ecuador</option>
-        <option value="Bolivia">Bolivia</option>
-        <option value="Estados Unidos">United States</option>
-        <option value="Otro">Other / Otro</option>
-      </select>
+      <label id="lbl-country"></label>
+      <select id="country" required></select>
     </div>
     <div class="row">
       <div class="field">
-        <label id="lbl-doctype">Tipo de Documento</label>
-        <select id="documentType" required>
-          <option value="" id="opt-doc-def">Selecciona</option>
-        </select>
+        <label id="lbl-doctype"></label>
+        <select id="documentType" required></select>
       </div>
       <div class="field">
-        <label id="lbl-docnum">Número de Documento</label>
-        <input type="text" id="documentNumber" placeholder="1234567890" required />
+        <label id="lbl-docnum"></label>
+        <input type="text" id="documentNumber" required />
       </div>
     </div>
     <div id="errorMsg" class="alert error"></div>
     <div id="successMsg" class="alert success"></div>
-    <button type="submit" id="submitBtn">Registrarse</button>
+    <button type="submit" id="submitBtn"></button>
   </form>
 </div>
 
 <script>
-  // ✅ Google Apps Script — guarda directo en Google Sheets
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwjF7pD3w6s1Vrar1qHRx9we3z7mheaJ3eBu7O0KJD4NWzDQTTDTh2MRe7RSXGrlJ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwjF7pD3w6s1Vrar1qHRx9we3z7mheaJ3eBu7O0KJD4NWzDQTTDTh2MRe7RSXGrlJ/exec';
 
-  const i18n = {
-    es: {
-      subtitle:'Registro Internacional de Clientes',
-      name:'Nombre Completo', email:'Correo Electrónico', phone:'Teléfono',
-      birth:'Fecha de Nacimiento', country:'País de Origen', countryDef:'Selecciona un país',
-      doctype:'Tipo de Documento', doctypeDef:'Selecciona', docnum:'Número de Documento',
-      submit:'Registrarse', loading:'Registrando...',
-      errFill:'Por favor, completa todos los campos.',
-      errServer:'No se pudo conectar. Intenta de nuevo.',
-      success:'¡Registro exitoso! Bienvenido/a 🎉',
-      namePh:'Juan Pérez', emailPh:'juan@ejemplo.com', phonePh:'+57 300 000 0000',
-    },
-    en: {
-      subtitle:'International Client Registration',
-      name:'Full Name', email:'Email Address', phone:'Phone Number',
-      birth:'Date of Birth', country:'Country of Origin', countryDef:'Select a country',
-      doctype:'Document Type', doctypeDef:'Select', docnum:'Document Number',
-      submit:'Register', loading:'Registering...',
-      errFill:'Please fill in all fields.',
-      errServer:'Could not connect. Please try again.',
-      success:'Registration successful! Welcome 🎉',
-      namePh:'John Doe', emailPh:'john@example.com', phonePh:'+1 555 000 0000',
-    }
-  };
+const languages = [
+  { code:'es', flag:'🇨🇴', name:'Español',   native:'' },
+  { code:'en', flag:'🇺🇸', name:'English',   native:'' },
+  { code:'pt', flag:'🇧🇷', name:'Português', native:'' },
+  { code:'fr', flag:'🇫🇷', name:'Français',  native:'' },
+  { code:'de', flag:'🇩🇪', name:'Deutsch',   native:'' },
+  { code:'it', flag:'🇮🇹', name:'Italiano',  native:'' },
+  { code:'zh', flag:'🇨🇳', name:'中文',       native:'Chinese' },
+  { code:'ar', flag:'🇸🇦', name:'العربية',   native:'Arabic' },
+  { code:'ru', flag:'🇷🇺', name:'Русский',   native:'Russian' },
+  { code:'ja', flag:'🇯🇵', name:'日本語',     native:'Japanese' },
+];
 
-  const docTypes = {
-    'Colombia':       ['Cédula de Ciudadanía','Pasaporte'],
-    'México':         ['RFC','INE','Pasaporte'],
-    'España':         ['DNI','Pasaporte'],
-    'Argentina':      ['DNI','Pasaporte'],
-    'Estados Unidos': ['Social Security Number',"Driver's License",'Passport'],
-    'default':        ['Passport / Pasaporte','ID / Cédula','DNI','Other / Otro'],
-  };
+const i18n = {
+  es: {
+    subtitle:'Registro Internacional de Clientes',
+    name:'Nombre Completo', email:'Correo Electrónico', phone:'Teléfono',
+    birth:'Fecha de Nacimiento', country:'País de Origen', countryDef:'Selecciona un país',
+    doctype:'Tipo de Documento', doctypeDef:'Selecciona', docnum:'Número de Documento',
+    submit:'Registrarse', loading:'Registrando...',
+    errFill:'Por favor, completa todos los campos.',
+    errServer:'No se pudo conectar. Intenta de nuevo.',
+    success:'¡Registro exitoso! Bienvenido/a 🎉',
+    namePh:'Juan Pérez', emailPh:'juan@ejemplo.com', phonePh:'+57 300 000 0000',
+    dayPh:'Día', monthPh:'Mes', yearPh:'Año',
+    months:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+    dir:'ltr',
+  },
+  en: {
+    subtitle:'International Client Registration',
+    name:'Full Name', email:'Email Address', phone:'Phone Number',
+    birth:'Date of Birth', country:'Country of Origin', countryDef:'Select a country',
+    doctype:'Document Type', doctypeDef:'Select', docnum:'Document Number',
+    submit:'Register', loading:'Registering...',
+    errFill:'Please fill in all fields.',
+    errServer:'Could not connect. Please try again.',
+    success:'Registration successful! Welcome 🎉',
+    namePh:'John Doe', emailPh:'john@example.com', phonePh:'+1 555 000 0000',
+    dayPh:'Day', monthPh:'Month', yearPh:'Year',
+    months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    dir:'ltr',
+  },
+  pt: {
+    subtitle:'Registro Internacional de Clientes',
+    name:'Nome Completo', email:'Endereço de E-mail', phone:'Telefone',
+    birth:'Data de Nascimento', country:'País de Origem', countryDef:'Selecione um país',
+    doctype:'Tipo de Documento', doctypeDef:'Selecione', docnum:'Número do Documento',
+    submit:'Registrar', loading:'Registrando...',
+    errFill:'Por favor, preencha todos os campos.',
+    errServer:'Não foi possível conectar. Tente novamente.',
+    success:'Registro bem-sucedido! Bem-vindo/a 🎉',
+    namePh:'João Silva', emailPh:'joao@exemplo.com', phonePh:'+55 11 90000-0000',
+    dayPh:'Dia', monthPh:'Mês', yearPh:'Ano',
+    months:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    dir:'ltr',
+  },
+  fr: {
+    subtitle:'Inscription Internationale des Clients',
+    name:'Nom Complet', email:'Adresse E-mail', phone:'Téléphone',
+    birth:'Date de Naissance', country:"Pays d'Origine", countryDef:'Sélectionnez un pays',
+    doctype:'Type de Document', doctypeDef:'Sélectionnez', docnum:'Numéro de Document',
+    submit:"S'inscrire", loading:'Inscription...',
+    errFill:'Veuillez remplir tous les champs.',
+    errServer:'Connexion impossible. Réessayez.',
+    success:'Inscription réussie ! Bienvenue 🎉',
+    namePh:'Jean Dupont', emailPh:'jean@exemple.fr', phonePh:'+33 6 00 00 00 00',
+    dayPh:'Jour', monthPh:'Mois', yearPh:'Année',
+    months:['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    dir:'ltr',
+  },
+  de: {
+    subtitle:'Internationale Kundenregistrierung',
+    name:'Vollständiger Name', email:'E-Mail-Adresse', phone:'Telefonnummer',
+    birth:'Geburtsdatum', country:'Herkunftsland', countryDef:'Land auswählen',
+    doctype:'Dokumententyp', doctypeDef:'Auswählen', docnum:'Dokumentennummer',
+    submit:'Registrieren', loading:'Registrierung...',
+    errFill:'Bitte alle Felder ausfüllen.',
+    errServer:'Verbindung fehlgeschlagen. Erneut versuchen.',
+    success:'Registrierung erfolgreich! Willkommen 🎉',
+    namePh:'Max Müller', emailPh:'max@beispiel.de', phonePh:'+49 151 00000000',
+    dayPh:'Tag', monthPh:'Monat', yearPh:'Jahr',
+    months:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    dir:'ltr',
+  },
+  it: {
+    subtitle:'Registrazione Internazionale Clienti',
+    name:'Nome Completo', email:'Indirizzo Email', phone:'Telefono',
+    birth:'Data di Nascita', country:'Paese di Origine', countryDef:'Seleziona un paese',
+    doctype:'Tipo di Documento', doctypeDef:'Seleziona', docnum:'Numero di Documento',
+    submit:'Registrati', loading:'Registrazione...',
+    errFill:'Si prega di compilare tutti i campi.',
+    errServer:'Connessione non riuscita. Riprova.',
+    success:'Registrazione avvenuta! Benvenuto/a 🎉',
+    namePh:'Mario Rossi', emailPh:'mario@esempio.it', phonePh:'+39 333 000 0000',
+    dayPh:'Giorno', monthPh:'Mese', yearPh:'Anno',
+    months:['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+    dir:'ltr',
+  },
+  zh: {
+    subtitle:'国际客户注册',
+    name:'姓名', email:'电子邮件', phone:'电话号码',
+    birth:'出生日期', country:'原籍国', countryDef:'选择国家',
+    doctype:'证件类型', doctypeDef:'请选择', docnum:'证件号码',
+    submit:'注册', loading:'注册中...',
+    errFill:'请填写所有字段。',
+    errServer:'连接失败，请重试。',
+    success:'注册成功！欢迎 🎉',
+    namePh:'张伟', emailPh:'zhang@example.cn', phonePh:'+86 138 0000 0000',
+    dayPh:'日', monthPh:'月', yearPh:'年',
+    months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    dir:'ltr',
+  },
+  ar: {
+    subtitle:'تسجيل العملاء الدولي',
+    name:'الاسم الكامل', email:'البريد الإلكتروني', phone:'رقم الهاتف',
+    birth:'تاريخ الميلاد', country:'بلد المنشأ', countryDef:'اختر دولة',
+    doctype:'نوع الوثيقة', doctypeDef:'اختر', docnum:'رقم الوثيقة',
+    submit:'تسجيل', loading:'جارٍ التسجيل...',
+    errFill:'يرجى ملء جميع الحقول.',
+    errServer:'تعذّر الاتصال. حاول مجدداً.',
+    success:'تم التسجيل بنجاح! مرحباً 🎉',
+    namePh:'محمد أحمد', emailPh:'mohammed@example.com', phonePh:'+966 50 000 0000',
+    dayPh:'يوم', monthPh:'شهر', yearPh:'سنة',
+    months:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    dir:'rtl',
+  },
+  ru: {
+    subtitle:'Международная регистрация клиентов',
+    name:'Полное имя', email:'Электронная почта', phone:'Номер телефона',
+    birth:'Дата рождения', country:'Страна происхождения', countryDef:'Выберите страну',
+    doctype:'Тип документа', doctypeDef:'Выберите', docnum:'Номер документа',
+    submit:'Зарегистрироваться', loading:'Регистрация...',
+    errFill:'Пожалуйста, заполните все поля.',
+    errServer:'Ошибка подключения. Попробуйте ещё раз.',
+    success:'Регистрация прошла успешно! Добро пожаловать 🎉',
+    namePh:'Иван Иванов', emailPh:'ivan@example.ru', phonePh:'+7 900 000 00 00',
+    dayPh:'День', monthPh:'Месяц', yearPh:'Год',
+    months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+    dir:'ltr',
+  },
+  ja: {
+    subtitle:'国際クライアント登録',
+    name:'氏名', email:'メールアドレス', phone:'電話番号',
+    birth:'生年月日', country:'出身国', countryDef:'国を選択',
+    doctype:'書類の種類', doctypeDef:'選択', docnum:'書類番号',
+    submit:'登録する', loading:'登録中...',
+    errFill:'すべてのフィールドを入力してください。',
+    errServer:'接続できませんでした。もう一度お試しください。',
+    success:'登録完了！ようこそ 🎉',
+    namePh:'山田太郎', emailPh:'yamada@example.jp', phonePh:'+81 90 0000 0000',
+    dayPh:'日', monthPh:'月', yearPh:'年',
+    months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    dir:'ltr',
+  },
+};
 
-  let lang = 'es';
+const countries = {
+  es:['Colombia','México','España','Argentina','Perú','Venezuela','Chile','Ecuador','Bolivia','Brasil','Panamá','Costa Rica','Estados Unidos','Canadá','Alemania','Francia','Italia','China','Japón','Arabia Saudita','Rusia','Otro'],
+  en:['Colombia','Mexico','Spain','Argentina','Peru','Venezuela','Chile','Ecuador','Bolivia','Brazil','Panama','Costa Rica','United States','Canada','Germany','France','Italy','China','Japan','Saudi Arabia','Russia','Other'],
+  pt:['Colômbia','México','Espanha','Argentina','Peru','Venezuela','Chile','Equador','Bolívia','Brasil','Panamá','Costa Rica','Estados Unidos','Canadá','Alemanha','França','Itália','China','Japão','Arábia Saudita','Rússia','Outro'],
+  fr:['Colombie','Mexique','Espagne','Argentine','Pérou','Venezuela','Chili','Équateur','Bolivie','Brésil','Panama','Costa Rica','États-Unis','Canada','Allemagne','France','Italie','Chine','Japon','Arabie saoudite','Russie','Autre'],
+  de:['Kolumbien','Mexiko','Spanien','Argentinien','Peru','Venezuela','Chile','Ecuador','Bolivien','Brasilien','Panama','Costa Rica','USA','Kanada','Deutschland','Frankreich','Italien','China','Japan','Saudi-Arabien','Russland','Andere'],
+  it:['Colombia','Messico','Spagna','Argentina','Perù','Venezuela','Cile','Ecuador','Bolivia','Brasile','Panama','Costa Rica','Stati Uniti','Canada','Germania','Francia','Italia','Cina','Giappone','Arabia Saudita','Russia','Altro'],
+  zh:['哥伦比亚','墨西哥','西班牙','阿根廷','秘鲁','委内瑞拉','智利','厄瓜多尔','玻利维亚','巴西','巴拿马','哥斯达黎加','美国','加拿大','德国','法国','意大利','中国','日本','沙特阿拉伯','俄罗斯','其他'],
+  ar:['كولومبيا','المكسيك','إسبانيا','الأرجنتين','بيرو','فنزويلا','تشيلي','الإكوادور','بوليفيا','البرازيل','بنما','كوستاريكا','الولايات المتحدة','كندا','ألمانيا','فرنسا','إيطاليا','الصين','اليابان','المملكة العربية السعودية','روسيا','أخرى'],
+  ru:['Колумбия','Мексика','Испания','Аргентина','Перу','Венесуэла','Чили','Эквадор','Боливия','Бразилия','Панама','Коста-Рика','США','Канада','Германия','Франция','Италия','Китай','Япония','Саудовская Аравия','Россия','Другое'],
+  ja:['コロンビア','メキシコ','スペイン','アルゼンチン','ペルー','ベネズエラ','チリ','エクアドル','ボリビア','ブラジル','パナマ','コスタリカ','アメリカ','カナダ','ドイツ','フランス','イタリア','中国','日本','サウジアラビア','ロシア','その他'],
+};
 
-  function setLang(l) {
-    lang = l;
-    const t = i18n[l];
-    document.getElementById('txt-subtitle').textContent    = t.subtitle;
-    document.getElementById('lbl-name').textContent        = t.name;
-    document.getElementById('lbl-email').textContent       = t.email;
-    document.getElementById('lbl-phone').textContent       = t.phone;
-    document.getElementById('lbl-birth').textContent       = t.birth;
-    document.getElementById('lbl-country').textContent     = t.country;
-    document.getElementById('lbl-doctype').textContent     = t.doctype;
-    document.getElementById('lbl-docnum').textContent      = t.docnum;
-    document.getElementById('opt-country-def').textContent = t.countryDef;
-    document.getElementById('submitBtn').textContent       = t.submit;
-    document.getElementById('name').placeholder            = t.namePh;
-    document.getElementById('email').placeholder           = t.emailPh;
-    document.getElementById('phone').placeholder           = t.phonePh;
-    document.getElementById('btn-es').classList.toggle('active', l==='es');
-    document.getElementById('btn-en').classList.toggle('active', l==='en');
-    updateDocTypes();
+const docTypes = {
+  'Colombia':        ['Cédula de Ciudadanía','Pasaporte','Cédula Extranjería'],
+  'México':          ['RFC','INE','Pasaporte'],
+  'Mexico':          ['RFC','INE','Pasaporte'],
+  'España':          ['DNI','Pasaporte'],
+  'Spain':           ['DNI','Passport'],
+  'Espagne':         ['DNI','Passeport'],
+  'Spanien':         ['Personalausweis','Reisepass'],
+  'Argentina':       ['DNI','Pasaporte'],
+  'Brasil':          ['CPF','RG','Passaporte'],
+  'Brazil':          ['CPF','RG','Passport'],
+  'Estados Unidos':  ['Social Security Number',"Driver's License",'Passport'],
+  'United States':   ['Social Security Number',"Driver's License",'Passport'],
+  'США':             ['Паспорт','Водительские права'],
+  'default':         ['Passport / Pasaporte','ID / Cédula','DNI','Other / Otro'],
+};
+
+let lang = 'es';
+
+// Build globe dropdown
+const dropdown = document.getElementById('langDropdown');
+dropdown.innerHTML = languages.map(l => `
+  <div class="lang-option" data-code="${l.code}" onclick="setLang('${l.code}')">
+    <span class="flag">${l.flag}</span>
+    <span class="lang-label">
+      <span class="lang-main">${l.name}</span>
+      ${l.native ? `<span class="lang-sub">${l.native}</span>` : ''}
+    </span>
+  </div>`).join('');
+
+const globeBtn = document.getElementById('globeBtn');
+globeBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = dropdown.classList.toggle('open');
+  globeBtn.classList.toggle('open', open);
+});
+document.addEventListener('click', () => {
+  dropdown.classList.remove('open');
+  globeBtn.classList.remove('open');
+});
+
+function setLang(l) {
+  lang = l;
+  const t = i18n[l];
+  document.documentElement.lang = l;
+  document.documentElement.dir  = t.dir;
+
+  document.getElementById('txt-subtitle').textContent = t.subtitle;
+  document.getElementById('lbl-name').textContent     = t.name;
+  document.getElementById('lbl-email').textContent    = t.email;
+  document.getElementById('lbl-phone').textContent    = t.phone;
+  document.getElementById('lbl-birth').textContent    = t.birth;
+  document.getElementById('lbl-country').textContent  = t.country;
+  document.getElementById('lbl-doctype').textContent  = t.doctype;
+  document.getElementById('lbl-docnum').textContent   = t.docnum;
+  document.getElementById('submitBtn').textContent    = t.submit;
+  document.getElementById('name').placeholder         = t.namePh;
+  document.getElementById('email').placeholder        = t.emailPh;
+  document.getElementById('phone').placeholder        = t.phonePh;
+
+  document.querySelectorAll('.lang-option').forEach(el =>
+    el.classList.toggle('active', el.dataset.code === l));
+
+  dropdown.classList.remove('open');
+  globeBtn.classList.remove('open');
+
+  buildDateSelects();
+  buildCountrySelect();
+}
+
+function buildDateSelects() {
+  const t = i18n[lang];
+  const dayEl   = document.getElementById('birthDay');
+  const monthEl = document.getElementById('birthMonth');
+  const yearEl  = document.getElementById('birthYear');
+  const sd = dayEl.value, sm = monthEl.value, sy = yearEl.value;
+
+  dayEl.innerHTML = `<option value="">${t.dayPh}</option>`;
+  for (let d = 1; d <= 31; d++) {
+    const o = document.createElement('option');
+    o.value = String(d).padStart(2,'0'); o.textContent = d;
+    if (o.value === sd) o.selected = true;
+    dayEl.appendChild(o);
   }
-
-  function updateDocTypes() {
-    const country = document.getElementById('country').value;
-    const types = docTypes[country] || docTypes['default'];
-    const sel = document.getElementById('documentType');
-    sel.innerHTML = `<option value="">${i18n[lang].doctypeDef}</option>`;
-    types.forEach(t => {
-      const o = document.createElement('option');
-      o.value = t; o.textContent = t; sel.appendChild(o);
-    });
-  }
-
-  document.getElementById('country').addEventListener('change', updateDocTypes);
-
-  document.getElementById('registroForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const t = i18n[lang];
-    document.getElementById('errorMsg').classList.remove('show');
-    document.getElementById('successMsg').classList.remove('show');
-
-    const data = {
-      name:           document.getElementById('name').value.trim(),
-      email:          document.getElementById('email').value.trim(),
-      phone:          document.getElementById('phone').value.trim(),
-      birthDate:      document.getElementById('birthDate').value,
-      country:        document.getElementById('country').value,
-      documentType:   document.getElementById('documentType').value,
-      documentNumber: document.getElementById('documentNumber').value.trim(),
-    };
-
-    if (Object.values(data).some(v => !v)) {
-      const el = document.getElementById('errorMsg');
-      el.textContent = '✗ ' + t.errFill;
-      el.classList.add('show'); return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner"></span> ${t.loading}`;
-
-    try {
-      // Google Apps Script con FormData — funciona con no-cors
-      const form = new FormData();
-      Object.entries(data).forEach(([k, v]) => form.append(k, v));
-
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: form,
-        mode: 'no-cors',
-      });
-
-      // no-cors no devuelve respuesta legible, asumimos éxito
-      const el = document.getElementById('successMsg');
-      el.textContent = '✓ ' + t.success;
-      el.classList.add('show');
-      document.getElementById('registroForm').reset();
-      updateDocTypes();
-
-    } catch {
-      const el = document.getElementById('errorMsg');
-      el.textContent = '✗ ' + t.errServer;
-      el.classList.add('show');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = t.submit;
-    }
+  monthEl.innerHTML = `<option value="">${t.monthPh}</option>`;
+  t.months.forEach((m,i) => {
+    const o = document.createElement('option');
+    o.value = String(i+1).padStart(2,'0'); o.textContent = m;
+    if (o.value === sm) o.selected = true;
+    monthEl.appendChild(o);
   });
+  yearEl.innerHTML = `<option value="">${t.yearPh}</option>`;
+  const cy = new Date().getFullYear();
+  for (let y = cy; y >= 1920; y--) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    if (String(y) === sy) o.selected = true;
+    yearEl.appendChild(o);
+  }
+}
+
+function buildCountrySelect() {
+  const t = i18n[lang];
+  const sel = document.getElementById('country');
+  const saved = sel.value;
+  sel.innerHTML = `<option value="">${t.countryDef}</option>`;
+  (countries[lang] || countries['es']).forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    if (c === saved) o.selected = true;
+    sel.appendChild(o);
+  });
+  buildDocTypeSelect();
+}
+
+function buildDocTypeSelect() {
+  const t = i18n[lang];
+  const country = document.getElementById('country').value;
+  const types = docTypes[country] || docTypes['default'];
+  const sel = document.getElementById('documentType');
+  sel.innerHTML = `<option value="">${t.doctypeDef}</option>`;
+  types.forEach(dt => {
+    const o = document.createElement('option');
+    o.value = dt; o.textContent = dt; sel.appendChild(o);
+  });
+}
+
+document.getElementById('country').addEventListener('change', buildDocTypeSelect);
+
+document.getElementById('registroForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const t = i18n[lang];
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('successMsg').classList.remove('show');
+
+  const day   = document.getElementById('birthDay').value;
+  const month = document.getElementById('birthMonth').value;
+  const year  = document.getElementById('birthYear').value;
+  const birthDate = (day && month && year) ? `${year}-${month}-${day}` : '';
+
+  const data = {
+    name:           document.getElementById('name').value.trim(),
+    email:          document.getElementById('email').value.trim(),
+    phone:          document.getElementById('phone').value.trim(),
+    birthDate,
+    country:        document.getElementById('country').value,
+    documentType:   document.getElementById('documentType').value,
+    documentNumber: document.getElementById('documentNumber').value.trim(),
+    language:       lang,
+  };
+
+  if (Object.values(data).some(v => !v)) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = '✗ ' + t.errFill;
+    el.classList.add('show'); return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> ${t.loading}`;
+
+  try {
+    const form = new FormData();
+    Object.entries(data).forEach(([k,v]) => form.append(k,v));
+    await fetch(SCRIPT_URL, { method:'POST', body:form, mode:'no-cors' });
+    const el = document.getElementById('successMsg');
+    el.textContent = '✓ ' + t.success;
+    el.classList.add('show');
+    document.getElementById('registroForm').reset();
+    buildDateSelects();
+    buildCountrySelect();
+  } catch {
+    const el = document.getElementById('errorMsg');
+    el.textContent = '✗ ' + t.errServer;
+    el.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = t.submit;
+  }
+});
+
+// Init
+setLang('es');
 </script>
 </body>
 </html>
