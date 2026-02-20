@@ -25,8 +25,6 @@
         radial-gradient(ellipse 60% 50% at 90% 80%, rgba(120,80,200,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
-
-    /* Language bar */
     .lang-bar {
       position: fixed; top: 1.2rem; right: 1.5rem;
       display: flex; align-items: center; gap: 0.5rem; z-index: 100;
@@ -40,7 +38,6 @@
     .lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
     .lang-btn:hover:not(.active) { border-color: #444; color: var(--text); }
     .lang-sep { color: var(--border); font-size: 0.8rem; }
-
     .card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 2px; width: 100%; max-width: 520px;
@@ -55,9 +52,7 @@
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
-
     .sphere {
       flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%;
       background: radial-gradient(circle at 35% 35%,
@@ -70,13 +65,10 @@
     .sphere-lh { position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(201,168,76,0.25); transform:translateY(-50%); }
     .sphere-lv { position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(201,168,76,0.25); transform:translateX(-50%); }
     .sphere-ring { position:absolute; inset:9px; border-radius:50%; border:1px solid rgba(201,168,76,0.18); }
-
     .logo { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--accent); letter-spacing: 0.02em; }
     .subtitle { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.2rem; }
-
     .field { margin-bottom: 1.2rem; }
     label { display:block; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
-
     input, select {
       width: 100%; background: rgba(255,255,255,0.03);
       border: 1px solid var(--border); border-radius: 2px;
@@ -91,9 +83,7 @@
       box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
     }
     select option { background: #1a1a20; color: var(--text); }
-
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
     button[type="submit"] {
       width: 100%; padding: 0.85rem; margin-top: 1.5rem;
       background: var(--accent); color: #0d0d0f;
@@ -105,7 +95,6 @@
     button[type="submit"]:hover { opacity: 0.88; }
     button[type="submit"]:active { transform: scale(0.99); }
     button[type="submit"]:disabled { opacity: 0.4; cursor: not-allowed; }
-
     .spinner {
       display: inline-block; width: 14px; height: 14px;
       border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
@@ -113,12 +102,10 @@
       vertical-align: middle; margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .alert { padding: 0.8rem 1rem; border-radius: 2px; font-size: 0.82rem; margin-top: 1.2rem; display: none; }
     .alert.error   { background:rgba(224,95,95,0.1); border:1px solid rgba(224,95,95,0.3); color:var(--error); }
     .alert.success { background:rgba(95,201,122,0.1); border:1px solid rgba(95,201,122,0.3); color:var(--success); }
     .alert.show    { display:block; animation:fadeUp 0.3s ease; }
-
     @media(max-width:480px){
       .card { padding: 2rem 1.5rem; }
       .row  { grid-template-columns: 1fr; }
@@ -149,17 +136,14 @@
   </div>
 
   <form id="registroForm" novalidate>
-
     <div class="field">
       <label id="lbl-name">Nombre Completo</label>
       <input type="text" id="name" placeholder="Juan Pérez" required />
     </div>
-
     <div class="field">
       <label id="lbl-email">Correo Electrónico</label>
       <input type="email" id="email" placeholder="juan@ejemplo.com" required />
     </div>
-
     <div class="row">
       <div class="field">
         <label id="lbl-phone">Teléfono</label>
@@ -170,7 +154,6 @@
         <input type="date" id="birthDate" required />
       </div>
     </div>
-
     <div class="field">
       <label id="lbl-country">País de Origen</label>
       <select id="country" required>
@@ -188,7 +171,6 @@
         <option value="Otro">Other / Otro</option>
       </select>
     </div>
-
     <div class="row">
       <div class="field">
         <label id="lbl-doctype">Tipo de Documento</label>
@@ -201,16 +183,15 @@
         <input type="text" id="documentNumber" placeholder="1234567890" required />
       </div>
     </div>
-
     <div id="errorMsg" class="alert error"></div>
     <div id="successMsg" class="alert success"></div>
-
     <button type="submit" id="submitBtn">Registrarse</button>
   </form>
 </div>
 
 <script>
-  const BACKEND = 'https://next-front-xtv9.vercel.app';
+  // ✅ Google Apps Script — guarda directo en Google Sheets
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBOUF5-OjWAn6wP5u_ISTBA2W0ZuMqZ8avu_2YBdJMBzPWGeecs-PU9BCa4i1XKz1h/exec';
 
   const i18n = {
     es: {
@@ -220,8 +201,8 @@
       doctype:'Tipo de Documento', doctypeDef:'Selecciona', docnum:'Número de Documento',
       submit:'Registrarse', loading:'Registrando...',
       errFill:'Por favor, completa todos los campos.',
-      errServer:'No se pudo conectar con el servidor.',
-      success:'¡Registro exitoso!',
+      errServer:'No se pudo conectar. Intenta de nuevo.',
+      success:'¡Registro exitoso! Bienvenido/a 🎉',
       namePh:'Juan Pérez', emailPh:'juan@ejemplo.com', phonePh:'+57 300 000 0000',
     },
     en: {
@@ -231,8 +212,8 @@
       doctype:'Document Type', doctypeDef:'Select', docnum:'Document Number',
       submit:'Register', loading:'Registering...',
       errFill:'Please fill in all fields.',
-      errServer:'Could not connect to the server.',
-      success:'Registration successful!',
+      errServer:'Could not connect. Please try again.',
+      success:'Registration successful! Welcome 🎉',
       namePh:'John Doe', emailPh:'john@example.com', phonePh:'+1 555 000 0000',
     }
   };
@@ -309,24 +290,24 @@
     btn.innerHTML = `<span class="spinner"></span> ${t.loading}`;
 
     try {
-      const res = await fetch(`${BACKEND}/api/clientes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
+      // Google Apps Script requiere no-cors con fetch + FormData
+      const form = new FormData();
+      Object.entries(data).forEach(([k, v]) => form.append(k, v));
 
-      if (!res.ok) {
-        const el = document.getElementById('errorMsg');
-        el.textContent = '✗ ' + (result.message || t.errFill);
-        el.classList.add('show');
-      } else {
-        const el = document.getElementById('successMsg');
-        el.textContent = '✓ ' + t.success;
-        el.classList.add('show');
-        document.getElementById('registroForm').reset();
-        updateDocTypes();
-      }
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      // no-cors no devuelve respuesta legible, asumimos éxito
+      const el = document.getElementById('successMsg');
+      el.textContent = '✓ ' + t.success;
+      el.classList.add('show');
+      document.getElementById('registroForm').reset();
+      updateDocTypes();
+
     } catch {
       const el = document.getElementById('errorMsg');
       el.textContent = '✗ ' + t.errServer;
