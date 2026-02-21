@@ -25,8 +25,6 @@
         radial-gradient(ellipse 60% 50% at 90% 80%, rgba(120,80,200,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
-
-    /* ── LANGUAGE GLOBE ── */
     .lang-bar { position: fixed; top: 1.2rem; right: 1.5rem; z-index: 200; }
     .lang-globe-btn {
       background: var(--surface); border: 1px solid var(--border);
@@ -67,8 +65,6 @@
     .lang-option .lang-label { display: flex; flex-direction: column; }
     .lang-option .lang-main { font-size: 0.85rem; }
     .lang-option .lang-sub { font-size: 0.68rem; color: var(--muted); opacity: 0.65; }
-
-    /* ── CARD ── */
     .card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 2px; width: 100%; max-width: 520px;
@@ -83,23 +79,14 @@
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
-    .sphere {
-      flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%,
-        rgba(201,168,76,0.65) 0%, rgba(201,168,76,0.18) 40%,
-        rgba(201,168,76,0.05) 70%, transparent 100%);
-      border: 1px solid rgba(201,168,76,0.35);
-      box-shadow: inset -5px -5px 14px rgba(0,0,0,0.45), 0 0 22px rgba(201,168,76,0.1);
-      position: relative; overflow: hidden;
+    .header { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 2.5rem; }
+    .logo-svg {
+      flex-shrink: 0;
+      height: 52px;
+      width: auto;
     }
-    .sphere-lh { position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(201,168,76,0.25); transform:translateY(-50%); }
-    .sphere-lv { position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(201,168,76,0.25); transform:translateX(-50%); }
-    .sphere-ring { position:absolute; inset:9px; border-radius:50%; border:1px solid rgba(201,168,76,0.18); }
-    .logo { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--accent); letter-spacing: 0.02em; }
+    .header-text .logo-name { font-family: 'Playfair Display', serif; font-size: 1.65rem; color: var(--accent); letter-spacing: 0.02em; }
     .subtitle { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.2rem; }
-
-    /* ── FORM ── */
     .field { margin-bottom: 1.2rem; }
     label { display:block; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
     input, select {
@@ -117,8 +104,7 @@
     }
     select option { background: #1a1a20; color: var(--text); }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .date-row { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 0.4rem; }
-
+    .date-row { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 0.6rem; }
     button[type="submit"] {
       width: 100%; padding: 0.85rem; margin-top: 1.5rem;
       background: var(--accent); color: #0d0d0f;
@@ -141,17 +127,16 @@
     .alert.error   { background:rgba(224,95,95,0.1); border:1px solid rgba(224,95,95,0.3); color:var(--error); }
     .alert.success { background:rgba(95,201,122,0.1); border:1px solid rgba(95,201,122,0.3); color:var(--success); }
     .alert.show    { display:block; animation:fadeUp 0.3s ease; }
-
     [dir="rtl"] .lang-dropdown { right: auto; left: 0; }
     [dir="rtl"] .lang-option { border-left: none; border-right: 2px solid transparent; }
     [dir="rtl"] .lang-option.active { border-right-color: var(--accent); }
-
     @media(max-width:480px){
-      .card { padding: 2rem 1.5rem; }
+      .card { padding: 2rem 1.2rem; }
       .row  { grid-template-columns: 1fr; }
       .date-row { grid-template-columns: 1fr 1fr; }
-      .date-row select:nth-child(2) { grid-column: 1 / -1; order: -1; }
+      .date-row #birthMonth { grid-column: 1 / -1; order: -1; }
       .lang-bar { top: 0.8rem; right: 0.8rem; }
+      .logo-svg { height: 38px; }
     }
   </style>
 </head>
@@ -166,13 +151,47 @@
 
 <div class="card">
   <div class="header">
-    <div class="sphere">
-      <div class="sphere-lh"></div>
-      <div class="sphere-lv"></div>
-      <div class="sphere-ring"></div>
-    </div>
-    <div>
-      <div class="logo">San Valentín</div>
+    <svg class="logo-svg" viewBox="0 0 357 106" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4_37)">
+<path d="M58.8474 5.83272C58.1109 7.34923 56.754 8.04916 54.9708 7.73808C54.1179 7.58254 53.2263 7.54365 52.3734 7.31035C48.9232 6.416 45.473 5.40499 41.984 4.58841C34.3858 2.79971 26.8264 2.91636 19.4995 5.79384C11.4361 9.02128 5.97003 14.5429 4.6132 23.3698C3.56651 30.1746 5.03963 36.3962 9.459 41.7623C12.1727 45.0675 15.3515 47.945 18.9568 50.2003C24.2678 53.5055 29.6951 56.6163 35.1224 59.766C40.0457 62.6434 44.814 65.7153 48.8845 69.7593C57.2192 78.0029 55.3972 92.1959 45.2792 98.1064C43.4959 99.1563 41.5964 99.9729 39.6581 100.556L39.9682 101.606C40.2783 101.567 40.5497 101.489 40.8598 101.45C45.5118 100.634 50.0475 99.3896 54.1955 97.0565C67.376 89.5906 68.539 72.5202 60.8245 63.2267C58.0333 59.8437 54.8157 56.8885 51.1329 54.5554C47.0237 51.9112 42.7981 49.4615 38.5338 47.0506C33.2228 44.0176 27.8343 41.1401 23.1048 37.1739C20.5074 34.9963 18.0264 32.741 16.437 29.6691C12.0176 21.0756 15.6229 5.17168 31.5559 4.19956C40.5109 3.65517 47.7602 7.11592 53.4201 14.0374C56.6377 18.0037 58.3047 22.7087 59.3514 27.6471C59.8166 29.8247 60.1655 32.0411 60.5532 34.2186C60.6307 34.2186 60.7082 34.2186 60.7858 34.2186V0.0388872C60.7858 2.4233e-06 60.8633 -0.0777672 60.7858 0.0388872" fill="#CBAA83"/>
+<path d="M22.7559 100.478C9.65284 95.19 2.94625 84.7689 0 71.3925V106C0.155066 105.806 0.232599 105.611 0.310131 105.417C0.736562 104.134 1.04669 102.773 1.58942 101.528C2.48105 99.3896 3.95418 98.5341 6.28016 98.7285C7.94712 98.8841 9.61407 99.0785 11.2423 99.3507C15.1964 100.051 19.1118 100.789 23.066 101.567" fill="#CBAA83"/>
+<path d="M139.714 26.7139C139.714 25.3918 139.792 24.0697 139.714 22.7087C139.52 19.0924 138.784 15.5928 137.466 12.2098C136.342 9.29347 134.248 7.54366 131.379 6.57154C131.147 6.49377 130.914 6.416 130.682 6.33823C130.682 6.33823 130.682 6.29934 130.643 6.22157H159.369C159.369 6.29934 159.369 6.37711 159.408 6.416C159.02 6.57154 158.632 6.72708 158.245 6.88261C154.523 8.28247 150.995 9.9934 148.282 13.0264C146.149 15.4373 144.289 18.0426 142.777 20.8811C141.769 22.7865 140.877 24.7307 139.908 26.6361C139.869 26.6361 139.792 26.6361 139.753 26.6361L139.714 26.7139Z" fill="#CBAA83"/>
+<path d="M88.9689 36.9406C86.139 29.7858 83.309 22.631 79.8588 15.7484C77.6491 11.3544 74.1602 8.67131 69.547 7.34923C69.2756 7.27146 69.0042 7.19369 68.7329 6.99927H98.5442C98.5442 6.99927 98.5442 7.07704 98.5442 7.11592C97.924 7.31035 97.3037 7.46589 96.6835 7.66031C95.9081 7.9325 95.094 8.24358 94.3962 8.63243C92.9231 9.4879 92.4191 10.6933 92.8068 12.3654C93.776 16.7982 95.2103 21.0756 96.9548 25.2751L104.979 44.6009C107.771 51.4446 110.484 58.2106 113.314 64.9376C116.144 71.6258 119.129 78.2751 122.037 84.9633C122.153 85.2355 122.192 85.6244 122.114 85.8577C120.098 91.0293 118.005 96.201 115.95 101.373C115.95 101.412 115.873 101.45 115.718 101.528C114.787 99.3118 113.857 97.1343 112.927 94.9178C106.646 79.8305 100.405 64.7043 94.1249 49.617L88.9302 36.9017L88.9689 36.9406Z" fill="#CBAA83"/>
+<path d="M139.637 73.4534C139.637 71.3536 140.606 70.0316 142.195 70.0316C143.785 70.0316 144.017 70.537 144.366 71.5092H145.645C145.297 69.9927 144.056 69.0983 142.234 69.0983C139.288 69.0983 138.241 71.4703 138.241 73.5312C138.241 75.5921 139.249 77.8474 142.156 77.8474C145.064 77.8474 145.18 76.9919 145.645 75.4754H144.366C143.978 76.4475 143.281 76.9142 142.273 76.9142C140.645 76.9142 139.637 75.631 139.637 73.4534Z" fill="#CBAA83"/>
+<path d="M144.366 75.4754H145.645C145.18 77.0308 143.979 77.8474 142.156 77.8474C139.288 77.8474 138.241 75.5921 138.241 73.5312C138.241 71.4703 139.288 69.0983 142.234 69.0983C145.18 69.0983 145.297 69.9927 145.645 71.5092H144.366C144.017 70.537 143.281 70.0316 142.195 70.0316C140.606 70.0316 139.637 71.3536 139.637 73.4534C139.637 75.5532 140.606 76.9142 142.273 76.9142C143.94 76.9142 144.017 76.4475 144.366 75.4754Z" fill="#CBAA83"/>
+<path d="M157.896 69.0983C155.453 69.0983 153.786 70.8481 153.786 73.4923C153.786 76.1365 155.337 77.8863 157.779 77.8863C160.222 77.8863 161.889 75.5143 161.889 73.4534C161.889 71.3925 160.338 69.0983 157.896 69.0983ZM157.818 76.8753C156.151 76.8753 155.104 75.5143 155.104 73.4534C155.104 71.3925 156.112 70.1093 157.818 70.1093C159.524 70.1093 160.532 71.3925 160.532 73.4923C160.532 75.5921 159.524 76.9142 157.818 76.9142V76.8753Z" fill="#CBAA83"/>
+<path d="M171.348 73.4534C171.348 71.3536 172.317 70.0316 173.906 70.0316C175.496 70.0316 175.728 70.537 176.077 71.5092H177.356C177.007 69.9927 175.767 69.0983 173.945 69.0983C170.999 69.0983 169.952 71.4703 169.952 73.5312C169.952 75.5921 170.96 77.8474 173.867 77.8474C176.775 77.8474 176.891 76.9919 177.356 75.4754H176.077C175.689 76.4475 174.992 76.9142 173.984 76.9142C172.356 76.9142 171.348 75.631 171.348 73.4534Z" fill="#CBAA83"/>
+<path d="M176.077 75.4754H177.356C176.891 77.0308 175.689 77.8474 173.867 77.8474C170.999 77.8474 169.952 75.5921 169.952 73.5312C169.952 71.4703 170.999 69.0983 173.945 69.0983C176.891 69.0983 177.007 69.9927 177.356 71.5092H176.077C175.728 70.537 174.992 70.0316 173.906 70.0316C172.317 70.0316 171.348 71.3536 171.348 73.4534C171.348 75.5532 172.317 76.9142 173.984 76.9142C175.651 76.9142 175.728 76.4475 176.077 75.4754Z" fill="#CBAA83"/>
+<path d="M187.126 69.2538H185.846V77.7696H187.126V69.2538Z" fill="#CBAA83"/>
+<path d="M202.244 76.0976H201.896L201.818 75.9809C201.508 75.2421 200.073 72.7924 198.911 70.8092C198.562 70.226 198.251 69.6816 198.019 69.2538H196.197V77.7696H197.36V75.0088C197.36 72.909 197.36 71.548 197.282 70.8481V70.6148H197.631L197.709 70.7315C198.174 71.7425 200.539 75.9031 201.585 77.7696H203.291V69.2538H202.167V72.1313C202.167 73.5312 202.167 74.9699 202.244 75.9031V76.1365V76.0976Z" fill="#CBAA83"/>
+<path d="M214.417 69.2538L211.51 77.7696H212.75L213.525 75.5143H217.169L217.984 77.7696H219.34L216.278 69.2538H214.456H214.417ZM216.898 74.5033H213.719L213.874 73.9978C214.378 72.4035 214.844 71.0425 215.037 70.226V70.0704H215.386V70.226C215.658 70.9648 216.045 72.0924 216.666 73.9589L216.859 74.4644L216.898 74.5033Z" fill="#CBAA83"/>
+<path d="M244.732 72.5979H243.569L241.864 75.0088L240.042 73.2201L240.274 73.0646C241.399 72.4035 241.864 71.8591 241.864 71.0426C241.864 70.226 241.205 69.0983 239.693 69.0983C238.181 69.0983 237.444 69.9538 237.444 71.1981C237.444 72.4424 237.716 72.3646 238.336 72.9868L238.53 73.1812L238.297 73.2979C237.095 73.9978 236.591 74.6588 236.591 75.5921C236.591 76.5253 237.406 77.8474 239.15 77.8474C240.895 77.8474 241.088 77.3419 241.747 76.642L241.902 76.4864L243.182 77.7307H244.694L242.523 75.631L244.732 72.5979ZM239.693 69.8371C240.468 69.8371 240.817 70.4593 240.817 71.0426C240.817 71.6258 240.158 72.3258 239.654 72.5979L239.538 72.6757L239.421 72.5591C238.995 72.1313 238.53 71.6647 238.53 71.0426C238.53 70.4204 238.995 69.7982 239.693 69.7982V69.8371ZM241.088 75.9809C240.507 76.642 240.042 76.9142 239.344 76.9142C238.646 76.9142 237.871 76.1753 237.871 75.4365C237.871 74.6977 238.22 74.2311 238.917 73.7645L239.073 73.6867L241.243 75.8254L241.127 75.9809H241.088Z" fill="#CBAA83"/>
+<path d="M264.813 77.7307H266.132V70.226H268.884V69.2538H262.061V70.226H264.813V77.7307Z" fill="#CBAA83"/>
+<path d="M283.034 75.8254C283.034 74.6977 282.685 73.9978 281.987 73.7645L281.405 73.5701L281.987 73.3756C282.336 73.259 283.227 72.7924 283.227 71.4703C283.227 70.1482 282.181 69.2538 280.514 69.2538H276.947V77.7696H278.188V74.0756H279.816C281.483 74.0756 281.793 74.7366 281.793 75.8254V75.9809C281.793 76.7197 281.793 77.3808 281.909 77.7696H283.111C283.034 77.3419 283.034 76.7975 283.034 76.3309V75.8254ZM280.087 73.1034H278.188V70.1871H280.165C281.677 70.1871 281.909 71.0814 281.909 71.6258C281.909 72.5979 281.328 73.1034 280.087 73.1034Z" fill="#CBAA83"/>
+<path d="M294.082 69.2538L291.175 77.7696H292.415L293.19 75.5143H296.835L297.649 77.7696H299.005L295.943 69.2538H294.121H294.082ZM296.602 74.5033H293.423L293.617 73.8811C294.121 72.3257 294.547 71.0037 294.741 70.226V70.0704H295.09V70.226C295.323 70.9259 295.71 72.0535 296.331 73.8811L296.563 74.5033H296.602Z" fill="#CBAA83"/>
+<path d="M312.884 71.4703H314.202C313.853 70.0316 312.496 69.0983 310.674 69.0983C308.852 69.0983 306.604 70.8481 306.604 73.5701C306.604 76.292 308.077 77.8474 310.403 77.8474C312.729 77.8474 312.419 77.4974 312.884 76.7975L313.233 76.292V76.8753C313.271 77.1864 313.31 77.4585 313.349 77.653H314.241V73.1423H310.868V74.1533H313V74.4644C313 76.0198 312.186 76.8753 310.674 76.8753C309.162 76.8753 307.96 75.5921 307.96 73.4534C307.96 71.3147 308.968 69.9927 310.674 69.9927C312.38 69.9927 312.574 70.4982 312.923 71.4314L312.884 71.4703Z" fill="#CBAA83"/>
+<path d="M326.723 69.0983C324.281 69.0983 322.614 70.8481 322.614 73.4923C322.614 76.1365 324.165 77.8863 326.607 77.8863C329.049 77.8863 330.716 75.5143 330.716 73.4534C330.716 71.3925 329.166 69.0983 326.723 69.0983ZM326.646 76.8753C324.979 76.8753 323.932 75.5143 323.932 73.4534C323.932 71.3925 324.94 70.1093 326.607 70.1093C328.274 70.1093 329.321 71.3925 329.321 73.4923C329.321 75.5921 328.313 76.9142 326.607 76.9142L326.646 76.8753Z" fill="#CBAA83"/>
+<path d="M342.346 72.7924C340.912 72.4424 340.292 72.1702 340.292 71.2759C340.292 70.3815 340.873 69.9927 341.881 69.9927C342.889 69.9927 343.509 70.4204 343.703 71.237H345.021C344.866 70.4593 344.285 69.1372 341.92 69.1372C339.555 69.1372 338.935 70.0315 338.935 71.4703C338.935 72.909 339.4 73.3368 341.726 73.8811C343.199 74.2311 343.936 74.5811 343.936 75.5921C343.936 76.6031 343.703 76.9919 342.114 76.9919C340.524 76.9919 340.253 76.5253 339.982 75.5921H338.663C338.974 77.0697 340.137 77.8863 341.997 77.8863C343.858 77.8863 345.254 76.953 345.254 75.3976C345.254 73.8423 344.75 73.3756 342.308 72.7924H342.346Z" fill="#CBAA83"/>
+<path d="M341.997 77.8863C340.137 77.8863 338.974 77.0697 338.663 75.5921H339.982C340.253 76.5253 340.989 76.9919 342.114 76.9919C343.238 76.9919 343.936 76.0976 343.936 75.5921C343.936 74.5811 343.199 74.1922 341.726 73.8811C339.4 73.3368 338.935 72.5202 338.935 71.4703C338.935 70.4204 340.059 69.1372 341.92 69.1372C343.781 69.1372 344.866 70.4593 345.021 71.237H343.703C343.509 70.4204 342.889 69.9927 341.881 69.9927C340.873 69.9927 340.292 70.4593 340.292 71.2759C340.292 72.0924 340.912 72.4424 342.346 72.7924C344.789 73.3756 345.293 74.27 345.293 75.3976C345.293 76.5253 344.052 77.8863 342.036 77.8863H341.997Z" fill="#CBAA83"/>
+<path d="M128.007 60.8158C126.03 59.4549 124.75 57.394 124.169 54.6721H127.115C127.386 56.033 127.968 57.1607 128.86 58.0161C129.751 58.8716 130.837 59.4549 132.077 59.8437C133.318 60.1937 134.558 60.3881 135.838 60.3881C137.117 60.3881 138.086 60.2326 139.288 59.9604C140.49 59.6882 141.497 59.2216 142.312 58.5605C143.164 57.8995 143.552 57.044 143.552 55.9941C143.552 54.9442 143.436 55.022 143.164 54.5554C142.893 54.1277 142.544 53.7388 142.04 53.4277C141.459 53.0778 140.645 52.7667 139.559 52.4556C138.474 52.1445 137.233 51.8335 135.799 51.6001C133.899 51.328 132.194 50.978 130.682 50.5503C129.208 50.1225 127.89 49.4226 126.805 48.4505C125.681 47.4784 125.138 46.1174 125.138 44.4453C125.138 42.7733 125.642 41.4512 126.689 40.3624C127.735 39.2737 129.053 38.4571 130.604 37.9516C132.155 37.4461 133.705 37.1739 135.256 37.1739C138.008 37.1739 140.257 37.796 142.079 39.0404C143.862 40.2847 145.18 42.1123 146.033 44.562H143.281C142.118 41.3346 139.443 39.7403 135.256 39.7403C131.069 39.7403 133.163 39.9347 132 40.2458C130.837 40.5957 129.868 41.1401 129.053 41.8401C128.239 42.54 127.813 43.3955 127.735 44.4065C127.735 45.0286 127.968 45.6508 128.394 46.3118C129.015 46.9729 130.1 47.5561 131.612 47.9839C133.124 48.4505 134.636 48.8004 136.186 49.0337C138.086 49.3448 139.675 49.6948 140.993 50.0836C142.312 50.4725 143.475 51.1335 144.482 52.1056C145.49 53.0389 146.033 54.3221 146.072 55.9552V56.0719C146.072 57.7051 145.529 59.0271 144.444 60.0381C143.358 61.0492 142.04 61.788 140.451 62.2157C138.9 62.6434 137.311 62.8767 135.76 62.8767C132.504 62.8767 129.906 62.1768 127.968 60.8158H128.007Z" fill="#CBAA83"/>
+<path d="M159.834 36.2406L173.557 62.6823H170.727L166.385 54.2832H153.282L148.902 62.6823H146.149L159.873 36.2406H159.834ZM159.834 41.6845L154.639 51.639H165.029L159.834 41.6845Z" fill="#CBAA83"/>
+<path d="M173.557 37.2516H175.689L193.134 58.2106V37.2516H195.693V62.7212H193.599L176.116 41.8012V62.7212H173.518V37.2516H173.557Z" fill="#CBAA83"/>
+<path d="M197.476 37.3294L200.151 37.1739L210.928 58.2495L221.705 37.1739L224.38 37.3294L210.928 63.7322L197.476 37.3294Z" fill="#CBAA83"/>
+<path d="M230.117 36.2406L243.841 62.6823H241.011L236.669 54.2832H223.566L219.185 62.6823H216.433L230.156 36.2406H230.117ZM230.117 41.6845L224.923 51.639H235.312L230.117 41.6845Z" fill="#CBAA83"/>
+<path d="M243.841 37.2516H246.399V60.1548H262.1V62.7212H243.841V37.2516Z" fill="#CBAA83"/>
+<path d="M263.844 37.2516H282.103V39.818H266.403V48.0616H282.103V50.628H266.403V60.1548H282.103V62.7212H263.844V37.2516Z" fill="#CBAA83"/>
+<path d="M283.887 37.2516H286.019L303.464 58.2106V37.2516H306.022V62.7212H303.929L286.445 41.8012V62.7212H283.848V37.2516H283.887Z" fill="#CBAA83"/>
+<path d="M316.063 39.818H307.767V37.2516H326.879V39.818H318.621V62.7212H316.024V39.818H316.063Z" fill="#CBAA83"/>
+<path d="M331.53 29.708H334.826L329.825 35.2685H326.607L331.492 29.708H331.53ZM329.553 37.2517H332.151V62.7212H329.553V37.2517Z" fill="#CBAA83"/>
+<path d="M334.826 37.2516H336.958L354.403 58.2106V37.2516H356.961V62.7212H354.868L337.384 41.8012V62.7212H334.787V37.2516H334.826Z" fill="#CBAA83"/>
+</g>
+<defs>
+<clipPath id="clip0_4_37">
+<rect width="357" height="106" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+    <div class="header-text">
       <div class="subtitle" id="txt-subtitle"></div>
     </div>
   </div>
@@ -186,18 +205,16 @@
       <label id="lbl-email"></label>
       <input type="email" id="email" required />
     </div>
-    <div class="row">
-      <div class="field">
-        <label id="lbl-phone"></label>
-        <input type="tel" id="phone" required />
-      </div>
-      <div class="field">
-        <label id="lbl-birth"></label>
-        <div class="date-row">
-          <select id="birthDay" required></select>
-          <select id="birthMonth" required></select>
-          <select id="birthYear" required></select>
-        </div>
+    <div class="field">
+      <label id="lbl-phone"></label>
+      <input type="tel" id="phone" required />
+    </div>
+    <div class="field">
+      <label id="lbl-birth"></label>
+      <div class="date-row">
+        <select id="birthDay" required></select>
+        <select id="birthMonth" required></select>
+        <select id="birthYear" required></select>
       </div>
     </div>
     <div class="field">
@@ -238,9 +255,9 @@ const languages = [
 
 const i18n = {
   es: {
-    subtitle:'Registro Internacional de Clientes',
+    subtitle:'Celebra tu momento especial',
     name:'Nombre Completo', email:'Correo Electrónico', phone:'Teléfono',
-    birth:'Fecha de Nacimiento', country:'País de Origen', countryDef:'Selecciona un país',
+    birth:'Fecha de Cumpleaños', country:'País de Origen', countryDef:'Selecciona un país',
     doctype:'Tipo de Documento', doctypeDef:'Selecciona', docnum:'Número de Documento',
     submit:'Registrarse', loading:'Registrando...',
     errFill:'Por favor, completa todos los campos.',
@@ -252,9 +269,9 @@ const i18n = {
     dir:'ltr',
   },
   en: {
-    subtitle:'International Client Registration',
+    subtitle:'Celebrate your special moment',
     name:'Full Name', email:'Email Address', phone:'Phone Number',
-    birth:'Date of Birth', country:'Country of Origin', countryDef:'Select a country',
+    birth:'Birthday', country:'Country of Origin', countryDef:'Select a country',
     doctype:'Document Type', doctypeDef:'Select', docnum:'Document Number',
     submit:'Register', loading:'Registering...',
     errFill:'Please fill in all fields.',
@@ -266,9 +283,9 @@ const i18n = {
     dir:'ltr',
   },
   pt: {
-    subtitle:'Registro Internacional de Clientes',
+    subtitle:'Celebre o seu momento especial',
     name:'Nome Completo', email:'Endereço de E-mail', phone:'Telefone',
-    birth:'Data de Nascimento', country:'País de Origem', countryDef:'Selecione um país',
+    birth:'Data de Aniversário', country:'País de Origem', countryDef:'Selecione um país',
     doctype:'Tipo de Documento', doctypeDef:'Selecione', docnum:'Número do Documento',
     submit:'Registrar', loading:'Registrando...',
     errFill:'Por favor, preencha todos os campos.',
@@ -280,9 +297,9 @@ const i18n = {
     dir:'ltr',
   },
   fr: {
-    subtitle:'Inscription Internationale des Clients',
+    subtitle:'Célébrez votre moment spécial',
     name:'Nom Complet', email:'Adresse E-mail', phone:'Téléphone',
-    birth:'Date de Naissance', country:"Pays d'Origine", countryDef:'Sélectionnez un pays',
+    birth:'Date d\'Anniversaire', country:"Pays d'Origine", countryDef:'Sélectionnez un pays',
     doctype:'Type de Document', doctypeDef:'Sélectionnez', docnum:'Numéro de Document',
     submit:"S'inscrire", loading:'Inscription...',
     errFill:'Veuillez remplir tous les champs.',
@@ -294,9 +311,9 @@ const i18n = {
     dir:'ltr',
   },
   de: {
-    subtitle:'Internationale Kundenregistrierung',
+    subtitle:'Feier deinen besonderen Moment',
     name:'Vollständiger Name', email:'E-Mail-Adresse', phone:'Telefonnummer',
-    birth:'Geburtsdatum', country:'Herkunftsland', countryDef:'Land auswählen',
+    birth:'Geburtstag', country:'Herkunftsland', countryDef:'Land auswählen',
     doctype:'Dokumententyp', doctypeDef:'Auswählen', docnum:'Dokumentennummer',
     submit:'Registrieren', loading:'Registrierung...',
     errFill:'Bitte alle Felder ausfüllen.',
@@ -308,9 +325,9 @@ const i18n = {
     dir:'ltr',
   },
   it: {
-    subtitle:'Registrazione Internazionale Clienti',
+    subtitle:'Festeggia il tuo momento speciale',
     name:'Nome Completo', email:'Indirizzo Email', phone:'Telefono',
-    birth:'Data di Nascita', country:'Paese di Origine', countryDef:'Seleziona un paese',
+    birth:'Data di Compleanno', country:'Paese di Origine', countryDef:'Seleziona un paese',
     doctype:'Tipo di Documento', doctypeDef:'Seleziona', docnum:'Numero di Documento',
     submit:'Registrati', loading:'Registrazione...',
     errFill:'Si prega di compilare tutti i campi.',
@@ -322,9 +339,9 @@ const i18n = {
     dir:'ltr',
   },
   zh: {
-    subtitle:'国际客户注册',
+    subtitle:'庆祝您的特别时刻',
     name:'姓名', email:'电子邮件', phone:'电话号码',
-    birth:'出生日期', country:'原籍国', countryDef:'选择国家',
+    birth:'生日', country:'原籍国', countryDef:'选择国家',
     doctype:'证件类型', doctypeDef:'请选择', docnum:'证件号码',
     submit:'注册', loading:'注册中...',
     errFill:'请填写所有字段。',
@@ -336,9 +353,9 @@ const i18n = {
     dir:'ltr',
   },
   ar: {
-    subtitle:'تسجيل العملاء الدولي',
+    subtitle:'احتفل بلحظتك المميزة',
     name:'الاسم الكامل', email:'البريد الإلكتروني', phone:'رقم الهاتف',
-    birth:'تاريخ الميلاد', country:'بلد المنشأ', countryDef:'اختر دولة',
+    birth:'تاريخ الميلاد (عيد الميلاد)', country:'بلد المنشأ', countryDef:'اختر دولة',
     doctype:'نوع الوثيقة', doctypeDef:'اختر', docnum:'رقم الوثيقة',
     submit:'تسجيل', loading:'جارٍ التسجيل...',
     errFill:'يرجى ملء جميع الحقول.',
@@ -350,9 +367,9 @@ const i18n = {
     dir:'rtl',
   },
   ru: {
-    subtitle:'Международная регистрация клиентов',
+    subtitle:'Отпразднуй свой особый момент',
     name:'Полное имя', email:'Электронная почта', phone:'Номер телефона',
-    birth:'Дата рождения', country:'Страна происхождения', countryDef:'Выберите страну',
+    birth:'День рождения', country:'Страна происхождения', countryDef:'Выберите страну',
     doctype:'Тип документа', doctypeDef:'Выберите', docnum:'Номер документа',
     submit:'Зарегистрироваться', loading:'Регистрация...',
     errFill:'Пожалуйста, заполните все поля.',
@@ -364,9 +381,9 @@ const i18n = {
     dir:'ltr',
   },
   ja: {
-    subtitle:'国際クライアント登録',
+    subtitle:'あなたの特別な瞬間を祝おう',
     name:'氏名', email:'メールアドレス', phone:'電話番号',
-    birth:'生年月日', country:'出身国', countryDef:'国を選択',
+    birth:'誕生日', country:'出身国', countryDef:'国を選択',
     doctype:'書類の種類', doctypeDef:'選択', docnum:'書類番号',
     submit:'登録する', loading:'登録中...',
     errFill:'すべてのフィールドを入力してください。',
@@ -411,7 +428,6 @@ const docTypes = {
 
 let lang = 'es';
 
-// Build globe dropdown
 const dropdown = document.getElementById('langDropdown');
 dropdown.innerHTML = languages.map(l => `
   <div class="lang-option" data-code="${l.code}" onclick="setLang('${l.code}')">
@@ -573,7 +589,6 @@ document.getElementById('registroForm').addEventListener('submit', async e => {
   }
 });
 
-// Init
 setLang('es');
 </script>
 </body>
