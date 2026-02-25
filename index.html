@@ -16,123 +16,34 @@
       font-family: 'DM Sans', sans-serif;
       background: var(--bg); color: var(--text);
       min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; padding: 2rem; position: relative;
-    }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(120,80,200,0.05) 0%, transparent 60%);
-      pointer-events: none;
+      justify-content: center; padding: 2rem;
     }
     .card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 2px; width: 100%; max-width: 520px;
-      padding: 3rem 2.5rem; position: relative;
-      animation: fadeUp 0.6s ease both;
+      padding: 3rem 2.5rem; animation: fadeUp 0.6s ease;
     }
-    .card::before {
-      content: ''; position: absolute; top: 0; left: 2rem; right: 2rem; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     .header { text-align: center; margin-bottom: 2.5rem; }
-    .logo-name { 
-      font-family: 'Playfair Display', serif; 
-      font-size: 2.2rem; 
-      color: var(--accent); 
-      letter-spacing: 0.05em; 
-    }
-    .subtitle { 
-      font-size: 0.95rem; 
-      color: var(--muted); 
-      margin-top: 0.5rem; 
-    }
+    .logo-name { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--accent); }
+    .subtitle { font-size: 0.95rem; color: var(--muted); margin-top: 0.5rem; }
     .field { margin-bottom: 1.4rem; }
-    label { 
-      display: block; 
-      font-size: 0.78rem; 
-      letter-spacing: 0.12em; 
-      text-transform: uppercase; 
-      color: var(--muted); 
-      margin-bottom: 0.5rem; 
-    }
-    input {
-      width: 100%; 
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border); 
-      border-radius: 2px;
-      color: var(--text); 
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem; 
-      padding: 0.8rem 1rem;
-      transition: all 0.2s;
-    }
-    input:focus {
-      border-color: var(--accent); 
-      background: var(--accent-dim);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
-      outline: none;
-    }
-    .checkbox-field {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.8rem;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-    .checkbox-field input[type="checkbox"] {
-      margin-top: 0.3rem;
-      accent-color: var(--accent);
-      width: 18px;
-      height: 18px;
-    }
-    button[type="submit"] {
-      width: 100%; 
-      padding: 1rem; 
-      margin-top: 2rem;
-      background: var(--accent); 
-      color: #0d0d0f;
-      font-weight: 600;
-      font-size: 0.95rem; 
-      letter-spacing: 0.12em; 
-      text-transform: uppercase;
-      border: none; 
-      border-radius: 2px; 
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    button[type="submit"]:hover { opacity: 0.92; }
-    button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
-    .spinner {
-      display: inline-block; width: 16px; height: 16px;
-      border: 3px solid rgba(0,0,0,0.3); border-top-color: #000;
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-      vertical-align: middle; margin-right: 8px;
-    }
+    label { display: block; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 2px; color: var(--text); padding: 0.8rem 1rem; }
+    input:focus { border-color: var(--accent); background: var(--accent-dim); outline: none; }
+    .checkbox-field { display: flex; align-items: flex-start; gap: 0.8rem; margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+    .checkbox-field input[type="checkbox"] { margin-top: 0.3rem; accent-color: var(--accent); width: 18px; height: 18px; }
+    button[type="submit"] { width: 100%; padding: 1rem; margin-top: 2rem; background: var(--accent); color: #0d0d0f; font-weight: 600; text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .alert { 
-      padding: 1rem; 
-      border-radius: 2px; 
-      font-size: 0.9rem; 
-      margin-top: 1.5rem; 
-      display: none; 
-      text-align: center;
-    }
-    .alert.error { background: rgba(224,95,95,0.12); border: 1px solid rgba(224,95,95,0.4); color: var(--error); }
-    .alert.success { background: rgba(95,201,122,0.12); border: 1px solid rgba(95,201,122,0.4); color: var(--success); }
+    .alert { padding: 1rem; border-radius: 2px; font-size: 0.9rem; margin-top: 1.5rem; display: none; text-align: center; }
+    .alert.error { background: rgba(224,95,95,0.12); color: var(--error); border: 1px solid rgba(224,95,95,0.4); }
+    .alert.success { background: rgba(95,201,122,0.12); color: var(--success); border: 1px solid rgba(95,201,122,0.4); }
     .alert.show { display: block; }
-    @media(max-width:480px){
-      .card { padding: 2.5rem 1.5rem; }
-    }
   </style>
 </head>
 <body>
-
 <div class="card">
   <div class="header">
     <div class="logo-name">ANATATO 2026</div>
@@ -140,53 +51,31 @@
   </div>
 
   <form id="registroForm" novalidate>
-    <div class="field">
-      <label>Nombre Completo *</label>
-      <input type="text" id="name" required placeholder="Tu nombre completo" />
-    </div>
-
-    <div class="field">
-      <label>Nombre de la empresa *</label>
-      <input type="text" id="empresa" required placeholder="Nombre de tu empresa o negocio" />
-    </div>
-
-    <div class="field">
-      <label>Número de teléfono *</label>
-      <input type="tel" id="phone" required placeholder="+57 300 123 4567" />
-    </div>
-
-    <div class="field">
-      <label>Correo Electrónico *</label>
-      <input type="email" id="email" required placeholder="tuemail@ejemplo.com" />
-    </div>
-
+    <div class="field"><label>Nombre Completo *</label><input type="text" id="name" required></div>
+    <div class="field"><label>Nombre de la empresa *</label><input type="text" id="empresa" required></div>
+    <div class="field"><label>Número de teléfono *</label><input type="tel" id="phone" required></div>
+    <div class="field"><label>Correo Electrónico *</label><input type="email" id="email" required></div>
     <div class="checkbox-field">
-      <input type="checkbox" id="acepto" required />
-      <label for="acepto" style="text-transform: none; cursor: pointer;">
-        Acepto ser contactado/a por la empresa, para la gestión comercial y 
-        recibimiento de la experiencia gastronómica en el restaurante.
-      </label>
+      <input type="checkbox" id="acepto" required>
+      <label for="acepto">Acepto ser contactado/a por la empresa, para la gestión comercial y recibimiento de la experiencia gastronómica en el restaurante.</label>
     </div>
-
     <div id="errorMsg" class="alert error"></div>
     <div id="successMsg" class="alert success"></div>
-
     <button type="submit" id="submitBtn">Enviar Registro</button>
   </form>
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwjF7pD3w6s1Vrar1qHRx9we3z7mheaJ3eBu7O0KJD4NWzDQTTDTh2MRe7RSXGrlJ/exec'; // ← CAMBIA ESTO POR TU URL REAL SI ES DIFERENTE
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQoGLfzBRQgQ1jMH06uwm83-MrreSrzyi_9lUhLL0-Sr0LjzhCNXoZnFE_7_Z6oQvF/exec';
 
 document.getElementById('registroForm').addEventListener('submit', async e => {
   e.preventDefault();
-
-  const errorEl  = document.getElementById('errorMsg');
-  const successEl = document.getElementById('successMsg');
+  const error = document.getElementById('errorMsg');
+  const success = document.getElementById('successMsg');
   const btn = document.getElementById('submitBtn');
 
-  errorEl.classList.remove('show');
-  successEl.classList.remove('show');
+  error.classList.remove('show');
+  success.classList.remove('show');
 
   const nombre   = document.getElementById('name').value.trim();
   const empresa  = document.getElementById('empresa').value.trim();
@@ -195,34 +84,30 @@ document.getElementById('registroForm').addEventListener('submit', async e => {
   const acepto   = document.getElementById('acepto').checked ? 'Sí' : 'No';
 
   if (!nombre || !empresa || !telefono || !email || acepto === 'No') {
-    errorEl.textContent = '✗ Completa todos los campos y acepta los términos.';
-    errorEl.classList.add('show');
+    error.textContent = '✗ Completa todo y acepta los términos.';
+    error.classList.add('show');
     return;
   }
 
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner"></span> Enviando...`;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
 
   try {
     const formData = new FormData();
-    formData.append('nombre',   nombre);
-    formData.append('empresa',  empresa);
+    formData.append('nombre', nombre);
+    formData.append('empresa', empresa);
     formData.append('telefono', telefono);
-    formData.append('email',    email);
-    formData.append('acepto',   acepto);
+    formData.append('email', email);
+    formData.append('acepto', acepto);
 
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors'
-    });
+    await fetch(SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' });
 
-    successEl.textContent = '✓ Registro guardado correctamente. ¡Gracias por participar en ANATATO 2026! 🎉';
-    successEl.classList.add('show');
+    success.textContent = '✓ Registro guardado. ¡Gracias! 🎉';
+    success.classList.add('show');
     document.getElementById('registroForm').reset();
-  } catch (err) {
-    errorEl.textContent = '✗ Error al enviar. Verifica tu conexión e intenta de nuevo.';
-    errorEl.classList.add('show');
+  } catch {
+    error.textContent = '✗ Error al enviar. Intenta de nuevo.';
+    error.classList.add('show');
   } finally {
     btn.disabled = false;
     btn.textContent = 'Enviar Registro';
