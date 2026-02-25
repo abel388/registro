@@ -60,7 +60,7 @@
       color: var(--muted); 
       margin-bottom: 0.5rem; 
     }
-    input, select, textarea {
+    input {
       width: 100%; 
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border); 
@@ -71,7 +71,7 @@
       padding: 0.8rem 1rem;
       transition: all 0.2s;
     }
-    input:focus, select:focus {
+    input:focus {
       border-color: var(--accent); 
       background: var(--accent-dim);
       box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
@@ -176,7 +176,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwjF7pD3w6s1Vrar1qHRx9we3z7mheaJ3eBu7O0KJD4NWzDQTTDTh2MRe7RSXGrlJ/exec'; // ← cámbialo por TU URL real de Google Apps Script
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwjF7pD3w6s1Vrar1qHRx9we3z7mheaJ3eBu7O0KJD4NWzDQTTDTh2MRe7RSXGrlJ/exec'; // ← CAMBIA ESTO POR TU URL REAL SI ES DIFERENTE
 
 document.getElementById('registroForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -188,17 +188,14 @@ document.getElementById('registroForm').addEventListener('submit', async e => {
   errorEl.classList.remove('show');
   successEl.classList.remove('show');
 
-  const data = {
-    timestamp: new Date().toISOString(),
-    nombre: document.getElementById('name').value.trim(),
-    empresa: document.getElementById('empresa').value.trim(),
-    telefono: document.getElementById('phone').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    acepto: document.getElementById('acepto').checked ? 'Sí' : 'No'
-  };
+  const nombre   = document.getElementById('name').value.trim();
+  const empresa  = document.getElementById('empresa').value.trim();
+  const telefono = document.getElementById('phone').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const acepto   = document.getElementById('acepto').checked ? 'Sí' : 'No';
 
-  if (!data.nombre || !data.empresa || !data.telefono || !data.email || !data.acepto === 'No') {
-    errorEl.textContent = '✗ Por favor completa todos los campos obligatorios y acepta los términos.';
+  if (!nombre || !empresa || !telefono || !email || acepto === 'No') {
+    errorEl.textContent = '✗ Completa todos los campos y acepta los términos.';
     errorEl.classList.add('show');
     return;
   }
@@ -208,20 +205,23 @@ document.getElementById('registroForm').addEventListener('submit', async e => {
 
   try {
     const formData = new FormData();
-    Object.entries(data).forEach(([k, v]) => formData.append(k, v));
+    formData.append('nombre',   nombre);
+    formData.append('empresa',  empresa);
+    formData.append('telefono', telefono);
+    formData.append('email',    email);
+    formData.append('acepto',   acepto);
 
-    // Envío (no-cors porque Google Apps Script suele requerirlo)
     await fetch(SCRIPT_URL, {
       method: 'POST',
       body: formData,
       mode: 'no-cors'
     });
 
-    successEl.textContent = '✓ ¡Registro enviado con éxito! Gracias por participar en ANATATO 2026 🎉';
+    successEl.textContent = '✓ Registro guardado correctamente. ¡Gracias por participar en ANATATO 2026! 🎉';
     successEl.classList.add('show');
     document.getElementById('registroForm').reset();
   } catch (err) {
-    errorEl.textContent = '✗ Hubo un error al enviar. Intenta de nuevo o verifica tu conexión.';
+    errorEl.textContent = '✗ Error al enviar. Verifica tu conexión e intenta de nuevo.';
     errorEl.classList.add('show');
   } finally {
     btn.disabled = false;
