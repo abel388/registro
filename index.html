@@ -534,6 +534,18 @@
       box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
     }
     
+    .sync-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      margin-left: 1rem;
+      font-weight: 600;
+    }
+    
     @media (max-width: 768px) {
       .navbar-content {
         flex-direction: column;
@@ -570,7 +582,7 @@
   <div class="container">
     <!-- PAGE HEADER -->
     <div class="page-header">
-      <h1 class="page-title">Gestión de Inventario</h1>
+      <h1 class="page-title">Gestión de Inventario <span class="sync-badge" id="syncBadge">Local</span></h1>
       <p class="page-subtitle">Administración de computadores y equipos de tecnología</p>
     </div>
     
@@ -583,15 +595,15 @@
         <div class="panel-title">Registrar Nuevo Equipo</div>
         <form id="registroForm">
           <div class="form-group">
-            <label>Número de Serie / Código</label>
+            <label>Código del Equipo *</label>
             <input type="text" id="codigo" placeholder="PC-001, LAPTOP-005" required>
           </div>
           <div class="form-group">
-            <label>Descripción del Equipo</label>
+            <label>Descripción *</label>
             <input type="text" id="descripcion" placeholder="Dell OptiPlex 7090, Intel i7, 16GB RAM" required>
           </div>
           <div class="form-group">
-            <label>Ubicación</label>
+            <label>Ubicación *</label>
             <input type="text" id="ubicacion" placeholder="Oficina 1, Escritorio A" required>
           </div>
           <div class="form-group">
@@ -599,7 +611,7 @@
             <input type="text" id="usuario" placeholder="Nombre del usuario">
           </div>
           <div class="form-group">
-            <label>Estado del Equipo</label>
+            <label>Estado del Equipo *</label>
             <select id="estado" required>
               <option value="">-- Seleccionar Estado --</option>
               <option value="activo">✓ Activo</option>
@@ -612,7 +624,7 @@
             <label>Descripción del Problema (opcional)</label>
             <textarea id="problema" placeholder="Describe el problema, síntomas o incidencia reportada..."></textarea>
           </div>
-          <button type="submit" class="button">+ Registrar Equipo</button>
+          <button type="submit" class="button" id="submitBtn">+ Registrar Equipo</button>
         </form>
       </div>
       
@@ -668,6 +680,10 @@
   </div>
   
   <script>
+    // ===== CONFIGURACIÓN DE GOOGLE SHEETS =====
+    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_URL_HERE/usercontent'; // ← CAMBIAR CON TU URL
+    const USE_GOOGLE_SHEETS = false; // Cambiar a true cuando tengas la URL configurada
+    
     let equipos = JSON.parse(localStorage.getItem('equipos')) || [];
     let filteredEquipos = [];
     let currentEditIndex = -1;
@@ -691,6 +707,31 @@
     
     function saveToLocalStorage() {
       localStorage.setItem('equipos', JSON.stringify(equipos));
+    }
+    
+    async function saveToGoogleSheets(equipo) {
+      if (!USE_GOOGLE_SHEETS) return;
+      
+      try {
+        const formData = new FormData();
+        formData.append('codigo', equipo.codigo);
+        formData.append('descripcion', equipo.descripcion);
+        formData.append('ubicacion', equipo.ubicacion);
+        formData.append('usuario', equipo.usuario);
+        formData.append('estado', equipo.estado);
+        formData.append('problema', equipo.problema);
+        
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors'
+        });
+        
+        return true;
+      } catch (error) {
+        console.error('Error sincronizando con Google Sheets:', error);
+        return false;
+      }
     }
     
     function updateStats() {
@@ -800,10 +841,11 @@
     }
     
     // EVENTOS DE FORMULARIO
-    document.getElementById('registroForm').addEventListener('submit', (e) => {
+    document.getElementById('registroForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const codigo = document.getElementById('codigo').value.trim();
       const estado = document.getElementById('estado').value;
+      const btn = document.getElementById('submitBtn');
       
       if (!codigo || !estado) {
         showAlert('⚠ Por favor completa todos los campos requeridos', 'error');
@@ -825,12 +867,35 @@
         fecha: new Date().toISOString()
       };
       
+      // Mostrar estado de envío
+      btn.disabled = true;
+      btn.textContent = '⏳ Guardando...';
+      
+      // Guardar en localStorage
       equipos.push(nuevoEquipo);
       saveToLocalStorage();
+      
+      // Intentar sincronizar con Google Sheets si está habilitado
+      if (USE_GOOGLE_SHEETS) {
+        const synced = await saveToGoogleSheets(nuevoEquipo);
+        if (synced) {
+          showAlert(`✓ Equipo ${codigo} registrado y sincronizado con Google Sheets`, 'success');
+          document.getElementById('syncBadge').textContent = '✓ Sincronizado';
+          document.getElementById('syncBadge').style.background = 'rgba(16, 185, 129, 0.1)';
+        } else {
+          showAlert(`✓ Equipo ${codigo} registrado localmente (fallo al sincronizar)`, 'success');
+        }
+      } else {
+        showAlert(`✓ Equipo ${codigo} registrado en el inventario`, 'success');
+      }
+      
       updateStats();
       renderInventario();
       document.getElementById('registroForm').reset();
-      showAlert(`✓ Equipo ${codigo} registrado exitosamente en el inventario`, 'success');
+      
+      // Restaurar botón
+      btn.disabled = false;
+      btn.textContent = '+ Registrar Equipo';
     });
     
     // BÚSQUEDA
