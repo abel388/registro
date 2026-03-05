@@ -369,7 +369,7 @@
     const urlSection = document.getElementById('urlSection');
     
     // URL del Google Apps Script
-    const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwQoGLfzBRQgQ1jMH06uwm83-MrreSrzyi_9lUhLL0-Sr0LjzhCNXoZnFE_7_Z6oQvF/exec';
+    const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwQoGLfzBRQgQ1jMH06uwm83-MrreSrzyi_9lUhLL0-Sr0LjzhCNXoZnFE_7_Z6oQvF/usercontent';
     
     let SCRIPT_URL = localStorage.getItem('GOOGLE_APPS_SCRIPT_URL') || DEFAULT_URL;
     
@@ -384,8 +384,8 @@
         return;
       }
       
-      if (!url.includes('script.google.com')) {
-        showMessage('error', '⚠ La URL no parece ser válida. Debe contener "script.google.com"');
+      if (!url.includes('script.google.com') || !url.includes('usercontent')) {
+        showMessage('error', '⚠ La URL debe contener "script.google.com" y terminar en "usercontent"');
         return;
       }
       
