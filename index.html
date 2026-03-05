@@ -368,13 +368,13 @@
     const warningMsg = document.getElementById('warningMsg');
     const urlSection = document.getElementById('urlSection');
     
-    let SCRIPT_URL = localStorage.getItem('GOOGLE_APPS_SCRIPT_URL');
+    // URL del Google Apps Script
+    const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwQoGLfzBRQgQ1jMH06uwm83-MrreSrzyi_9lUhLL0-Sr0LjzhCNXoZnFE_7_Z6oQvF/exec';
     
-    // Si no hay URL configurada, mostrar sección de configuración
-    if (!SCRIPT_URL) {
-      urlSection.style.display = 'block';
-      showMessage('warning', '⚠️ Primero debes configurar la URL de Google Apps Script');
-    }
+    let SCRIPT_URL = localStorage.getItem('GOOGLE_APPS_SCRIPT_URL') || DEFAULT_URL;
+    
+    // Guardar la URL por defecto
+    localStorage.setItem('GOOGLE_APPS_SCRIPT_URL', SCRIPT_URL);
     
     function saveScriptUrl() {
       const url = document.getElementById('scriptUrl').value.trim();
@@ -384,8 +384,8 @@
         return;
       }
       
-      if (!url.includes('script.google.com') || !url.includes('usercontent')) {
-        showMessage('error', '⚠ La URL no parece ser válida. Debe contener "script.google.com" y terminar en "usercontent"');
+      if (!url.includes('script.google.com')) {
+        showMessage('error', '⚠ La URL no parece ser válida. Debe contener "script.google.com"');
         return;
       }
       
