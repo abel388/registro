@@ -217,6 +217,12 @@
       color: var(--error);
     }
     
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+    
     .required {
       color: var(--error);
     }
@@ -229,6 +235,45 @@
       margin-bottom: 1.5rem;
       font-size: 0.85rem;
       color: var(--text-muted);
+    }
+    
+    .url-input-section {
+      background: rgba(245, 158, 11, 0.05);
+      border: 2px dashed #f59e0b;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .url-input-section h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+    }
+    
+    .url-input-section input {
+      margin-bottom: 0.8rem;
+      font-size: 0.85rem;
+    }
+    
+    .url-button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #f59e0b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+    
+    .url-button:hover {
+      background: #d97706;
     }
     
     @media (max-width: 600px) {
@@ -255,6 +300,17 @@
       <!-- ALERTS -->
       <div id="successMsg" class="alert alert-success"></div>
       <div id="errorMsg" class="alert alert-error"></div>
+      <div id="warningMsg" class="alert alert-warning"></div>
+      
+      <!-- SECCIÓN DE CONFIGURACIÓN DE URL -->
+      <div id="urlSection" class="url-input-section" style="display: none;">
+        <h3>⚙️ Configurar URL de Google Apps Script</h3>
+        <input type="text" id="scriptUrl" placeholder="Pega aquí tu URL de Google Apps Script (ej: https://script.google.com/macros/s/AKfycbw.../usercontent)" />
+        <button class="url-button" onclick="saveScriptUrl()">💾 Guardar URL</button>
+        <p style="font-size: 0.75rem; margin-top: 0.8rem; color: var(--text-muted);">
+          La URL se guardará en tu navegador. No la compartiremos con nadie.
+        </p>
+      </div>
       
       <!-- INFO BOX -->
       <div class="form-info">
@@ -305,21 +361,47 @@
   </div>
 
   <script>
-    // ===== CONFIGURACIÓN =====
-    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_URL_HERE/usercontent'; // ← CAMBIAR CON TU URL
-    
     const form = document.getElementById('registroForm');
     const submitBtn = document.getElementById('submitBtn');
     const errorMsg = document.getElementById('errorMsg');
     const successMsg = document.getElementById('successMsg');
+    const warningMsg = document.getElementById('warningMsg');
+    const urlSection = document.getElementById('urlSection');
+    
+    let SCRIPT_URL = localStorage.getItem('GOOGLE_APPS_SCRIPT_URL');
+    
+    // Si no hay URL configurada, mostrar sección de configuración
+    if (!SCRIPT_URL) {
+      urlSection.style.display = 'block';
+      showMessage('warning', '⚠️ Primero debes configurar la URL de Google Apps Script');
+    }
+    
+    function saveScriptUrl() {
+      const url = document.getElementById('scriptUrl').value.trim();
+      
+      if (!url) {
+        showMessage('error', '⚠ Por favor ingresa una URL válida');
+        return;
+      }
+      
+      if (!url.includes('script.google.com') || !url.includes('usercontent')) {
+        showMessage('error', '⚠ La URL no parece ser válida. Debe contener "script.google.com" y terminar en "usercontent"');
+        return;
+      }
+      
+      SCRIPT_URL = url;
+      localStorage.setItem('GOOGLE_APPS_SCRIPT_URL', url);
+      urlSection.style.display = 'none';
+      showMessage('success', '✓ URL configurada correctamente');
+    }
     
     function showMessage(type, message) {
-      const element = type === 'error' ? errorMsg : successMsg;
-      const other = type === 'error' ? successMsg : errorMsg;
+      const element = type === 'error' ? errorMsg : type === 'warning' ? warningMsg : successMsg;
+      const others = [errorMsg, successMsg, warningMsg];
       
       element.textContent = message;
       element.classList.add('show');
-      other.classList.remove('show');
+      others.filter(e => e !== element).forEach(e => e.classList.remove('show'));
       
       setTimeout(() => {
         element.classList.remove('show');
@@ -328,6 +410,12 @@
     
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      if (!SCRIPT_URL) {
+        urlSection.style.display = 'block';
+        showMessage('error', '⚠ Por favor configura la URL de Google Apps Script primero');
+        return;
+      }
       
       // Validar campos requeridos
       const codigo = document.getElementById('codigo').value.trim();
@@ -364,17 +452,17 @@
         });
         
         // Con mode: 'no-cors', no obtenemos respuesta directa
-        // Por lo que asumimos éxito después de 1 segundo
+        // Por lo que asumimos éxito después de 1.5 segundos
         setTimeout(() => {
           showMessage('success', `✓ ¡Equipo ${codigo} registrado exitosamente!`);
           form.reset();
           submitBtn.disabled = false;
           submitBtn.innerHTML = '✓ Registrar Equipo';
-        }, 1000);
+        }, 1500);
         
       } catch (error) {
         console.error('Error:', error);
-        showMessage('error', '✗ Error al enviar el formulario. Intenta de nuevo.');
+        showMessage('error', '✗ Error al enviar. Verifica que la URL sea correcta.');
         submitBtn.disabled = false;
         submitBtn.innerHTML = '✓ Registrar Equipo';
       }
